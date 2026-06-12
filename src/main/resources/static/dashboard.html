@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Gestion Garage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+        <div class="brand">
+            <span class="brand-mark">GG</span>
+            <div>
+                <strong>GaragePro</strong>
+                <small>Gestion garage</small>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-link active" href="/dashboard">
+                <span class="icon">DB</span>
+                Tableau de bord
+            </a>
+            <a class="menu-link" href="/clients">
+                <span class="icon">CL</span>
+                Clients
+            </a>
+            <a class="menu-link" href="/vehicules">
+                <span class="icon">VH</span>
+                Véhicules
+            </a>
+            <a class="menu-link" href="/mecaniciens">
+                <span class="icon">MC</span>
+                Mécaniciens
+            </a>
+            <a class="menu-link" href="/reparations">
+                <span class="icon">RP</span>
+                Réparations
+            </a>
+            <!--<a class="menu-link" href="/swagger-ui.html">
+                <span class="icon">?</span>
+                Documentation API
+            </a>-->
+        </nav>
+
+        <!--<div class="sidebar-card">
+            <small>État du service</small>
+            <strong id="serviceStatus">Connexion...</strong>
+            <span id="serviceHint">Lecture des modules garage</span>
+        </div>-->
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="icon-button sidebar-toggle" type="button" aria-label="Ouvrir le menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div>
+                <p class="eyebrow">Vue générale</p>
+                <h1>Tableau de bord</h1>
+            </div>
+            <div class="topbar-actions">
+                <a class="ghost-button button-link" href="/clients/create">Nouveau client</a>
+                <a class="primary-button button-link" href="/reparations/create">Nouvelle réparation</a>
+            </div>
+        </header>
+
+        <section class="dashboard-view" id="dashboard">
+            <section class="hero-panel">
+                <div>
+                    <p class="eyebrow">Tableau de bord</p>
+                    <h2>Gestion du garage</h2>
+                    <p>Consultez les principales informations relatives aux clients, véhicules, mécaniciens et réparations.</p>
+                </div>
+            </section>
+
+            <section class="stats-grid" aria-label="Indicateurs">
+                <article class="stat-card accent-green">
+                    <span>Clients actifs</span>
+                    <strong id="clientsCount">0</strong>
+                </article>
+                <article class="stat-card accent-blue">
+                    <span>Véhicules suivis</span>
+                    <strong id="vehiculesCount">0</strong>
+                </article>
+                <article class="stat-card accent-yellow">
+                    <span>Réparations en cours</span>
+                    <strong id="reparationsCount">0</strong>
+                </article>
+                <article class="stat-card accent-red">
+                    <span>Chiffre réalisé</span>
+                    <strong id="repairTotalCost">0 GNF</strong>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <article class="panel wide">
+                    <div class="panel-header compact">
+                        <div>
+                            <p class="eyebrow">Atelier</p>
+                            <h3>Interventions récentes</h3>
+                        </div>
+                        <a class="see-all" href="/reparations">Tout voir</a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Véhicule</th>
+                                <th>Client</th>
+                                <th>Technicien</th>
+                                <th>Statut</th>
+                                <th>Montant</th>
+                            </tr>
+                            </thead>
+                            <tbody id="repairsTable">
+                            <tr><td colspan="5" class="empty">Chargement...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-header compact">
+                        <div>
+                            <p class="eyebrow">Équipe</p>
+                            <h3>Mécaniciens</h3>
+                        </div>
+                    </div>
+                    <div class="team-list" id="mechanicsList">
+                        <div class="empty">Chargement...</div>
+                    </div>
+                </article>
+            </section>
+        </section>
+
+        <section class="crud-panel panel" id="crud" hidden>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Administration</p>
+                    <h3 id="crudTitle">Gestion CRUD</h3>
+                </div>
+                <div class="crud-actions">
+                    <div class="search">
+                        <span>Re</span>
+                        <input type="search" id="globalSearch" placeholder="Rechercher..." aria-label="Rechercher">
+                    </div>
+                    <button class="primary-button" type="button" id="createButton">Ajouter</button>
+                </div>
+            </div>
+
+            <div class="table-wrap admin-table-wrap">
+                <table class="admin-table">
+                    <thead id="crudTableHead"></thead>
+                    <tbody id="crudTableBody">
+                    <tr><td class="empty">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal-backdrop" id="crudModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <form id="crudForm">
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow" id="modalEyebrow">CRUD</p>
+                    <h3 id="modalTitle">Ajouter</h3>
+                </div>
+                <button class="ghost-button icon-only" type="button" id="closeModalButton" aria-label="Fermer">x</button>
+            </div>
+            <div class="form-grid" id="formFields"></div>
+            <div class="form-error" id="formError" hidden></div>
+            <div class="modal-actions">
+                <button class="ghost-button" type="button" id="cancelModalButton">Annuler</button>
+                <button class="primary-button" type="submit" id="saveButton">Enregistrer</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>
