@@ -506,6 +506,11 @@ td {
     background: #fb8c2e;
 }
 
+.table-action.view {
+    color: #fff;
+    background: #4f7df3;
+}
+
 .table-action.delete {
     color: #fff;
     background: #ff3f4c;
@@ -573,6 +578,42 @@ td {
 
 .form-card {
     max-width: 980px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.8fr) minmax(0, 1.2fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.detail-list {
+    padding: 20px 22px 22px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.detail-item {
+    min-height: 82px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-soft);
+    display: grid;
+    align-content: center;
+    gap: 8px;
+}
+
+.detail-item span {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.detail-item strong {
+    overflow-wrap: anywhere;
 }
 
 .form-field {
@@ -702,7 +743,12 @@ body.menu-open .sidebar {
 
     .stats-grid,
     .content-grid,
+    .detail-grid,
     .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-list {
         grid-template-columns: 1fr;
     }
 

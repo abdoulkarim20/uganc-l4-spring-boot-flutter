@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Détail | Gestion Garage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+        <div class="brand">
+            <span class="brand-mark">GG</span>
+            <div>
+                <strong>GaragePro</strong>
+                <small>Gestion garage</small>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-link" href="/dashboard">
+                <span class="icon">DB</span>
+                Tableau de bord
+            </a>
+            <a class="menu-link" href="/clients" data-menu="clients">
+                <span class="icon">CL</span>
+                Clients
+            </a>
+            <a class="menu-link" href="/vehicules" data-menu="vehicules">
+                <span class="icon">VH</span>
+                Véhicules
+            </a>
+            <a class="menu-link" href="/mecaniciens" data-menu="mecaniciens">
+                <span class="icon">MC</span>
+                Mécaniciens
+            </a>
+            <a class="menu-link" href="/reparations" data-menu="reparations">
+                <span class="icon">RP</span>
+                Réparations
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="icon-button sidebar-toggle" type="button" aria-label="Ouvrir le menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div>
+                <p class="eyebrow" id="pageEyebrow">Détail</p>
+                <h1 id="pageTitle">Chargement...</h1>
+            </div>
+            <div class="topbar-actions">
+                <a class="ghost-button button-link" id="backLink" href="#">Retour</a>
+                <a class="primary-button button-link" id="editLink" href="#">Modifier</a>
+            </div>
+        </header>
+
+        <section class="detail-grid">
+            <article class="panel page-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow" id="detailEyebrow">Informations</p>
+                        <h3 id="detailTitle">Fiche</h3>
+                    </div>
+                </div>
+                <div class="detail-list" id="detailFields"></div>
+            </article>
+
+            <article class="panel page-card" id="relatedPanel" hidden>
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow" id="relatedEyebrow">Lié</p>
+                        <h3 id="relatedTitle">Liste</h3>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead id="relatedHead"></thead>
+                        <tbody id="relatedBody"></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+
+<script src="/js/detail.js"></script>
+</body>
+</html>

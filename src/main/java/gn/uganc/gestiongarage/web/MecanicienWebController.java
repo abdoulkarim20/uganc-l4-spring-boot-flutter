@@ -10,4 +10,9 @@ public class MecanicienWebController {
     public String mecaniciens() {
         return "forward:/crud.html";
     }
+
+    @GetMapping("/mecaniciens/{id}")
+    public String mecanicienDetail() {
+        return "forward:/detail.html";
+    }
 }

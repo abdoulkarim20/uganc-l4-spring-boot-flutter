@@ -172,6 +172,9 @@ function renderList() {
             ${config.columns.map((column) => renderCell(column, item)).join("")}
             <td>
                 <div class="row-actions">
+                    <a class="table-action view icon-action" href="/${resource}/${item.id}" aria-label="Voir les détails">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </a>
                     <a class="table-action edit icon-action" href="/${resource}/${item.id}/edit" aria-label="Modifier">
                         <i class="bi bi-pencil-square" aria-hidden="true"></i>
                     </a>

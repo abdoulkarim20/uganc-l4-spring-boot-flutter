@@ -10,4 +10,9 @@ public class VehiculeWebController {
     public String vehicules() {
         return "forward:/crud.html";
     }
+
+    @GetMapping("/vehicules/{id}")
+    public String vehiculeDetail() {
+        return "forward:/detail.html";
+    }
 }

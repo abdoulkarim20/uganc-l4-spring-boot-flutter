@@ -10,4 +10,9 @@ public class ReparationWebController {
     public String reparations() {
         return "forward:/crud.html";
     }
+
+    @GetMapping("/reparations/{id}")
+    public String reparationDetail() {
+        return "forward:/detail.html";
+    }
 }

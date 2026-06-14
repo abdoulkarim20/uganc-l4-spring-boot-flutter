@@ -10,4 +10,9 @@ public class ClientWebController {
     public String clients() {
         return "forward:/crud.html";
     }
+
+    @GetMapping("/clients/{id}")
+    public String clientDetail() {
+        return "forward:/detail.html";
+    }
 }
