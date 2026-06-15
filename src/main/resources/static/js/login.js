@@ -1,9 +1,7 @@
 const form = document.querySelector(".login-form");
 const error = document.querySelector("[data-login-error]");
 
-if (getAuthToken() && isAdminSession()) {
-    window.location.href = "/dashboard";
-}
+validateExistingSession();
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -24,18 +22,84 @@ form.addEventListener("submit", async (event) => {
         });
 
         if (!response.ok) {
-            throw new Error("Identifiants incorrects");
+            const text = await response.text();
+            throw new Error(text || "Identifiants incorrects");
         }
 
         const authResponse = await response.json();
         setAuthSession(authResponse);
-        if (!isAdminSession()) {
-            window.location.href = "/403";
+        if (isPasswordChangeRequired()) {
+            window.location.href = "/change-password";
             return;
         }
-        window.location.href = "/dashboard";
+        if (isAdminSession()) {
+            window.location.href = "/dashboard";
+            return;
+        }
+        if (isClientSession()) {
+            window.location.href = "/client/dashboard";
+            return;
+        }
+        if (isMecanicienSession()) {
+            window.location.href = "/mecanicien/dashboard";
+            return;
+        }
+        window.location.href = "/403";
     } catch (exception) {
         error.textContent = exception.message;
         error.hidden = false;
     }
 });
+
+async function validateExistingSession() {
+    const token = getAuthToken();
+    if (!token) {
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/auth/me", {
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            if (getAuthToken() === token) {
+                clearAuthSession();
+            }
+            return;
+        }
+
+        const user = await response.json();
+        if (getAuthToken() !== token) {
+            return;
+        }
+        localStorage.setItem(AUTH_USER_KEY, JSON.stringify({
+            username: user.username,
+            roles: user.roles || [],
+            mustChangePassword: Boolean(user.mustChangePassword)
+        }));
+
+        if (isPasswordChangeRequired()) {
+            window.location.href = "/change-password";
+            return;
+        }
+        if (isAdminSession()) {
+            window.location.href = "/dashboard";
+            return;
+        }
+        if (isClientSession()) {
+            window.location.href = "/client/dashboard";
+            return;
+        }
+        if (isMecanicienSession()) {
+            window.location.href = "/mecanicien/dashboard";
+        }
+    } catch (exception) {
+        if (getAuthToken() === token) {
+            clearAuthSession();
+        }
+    }
+}

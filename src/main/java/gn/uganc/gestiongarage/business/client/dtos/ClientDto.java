@@ -7,6 +7,7 @@ public class ClientDto {
     private String prenom;
     private String telephone;
     private String adresse;
+    private String password;
 
     public Long getId() {
         return id;
@@ -46,5 +47,13 @@ public class ClientDto {
 
     public void setAdresse(String adresse) {
         this.adresse = adresse;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

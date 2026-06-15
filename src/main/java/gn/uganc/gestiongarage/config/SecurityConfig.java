@@ -1,6 +1,7 @@
 package gn.uganc.gestiongarage.config;
 
 import gn.uganc.gestiongarage.security.JwtAuthenticationFilter;
+import gn.uganc.gestiongarage.security.PasswordChangeRequiredFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -18,7 +19,8 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                      PasswordChangeRequiredFilter passwordChangeRequiredFilter)
             throws Exception {
         return http
                 .securityMatcher("/api/**")
@@ -26,6 +28,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/client-space/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/mecanicien-space/**").hasAnyRole("MECANICIEN", "ADMIN")
                         .requestMatchers("/api/utilisateurs/**").hasRole("ADMIN")
                         .requestMatchers("/api/clients/**").hasRole("ADMIN")
                         .requestMatchers("/api/vehicules/**").hasRole("ADMIN")
@@ -37,6 +41,7 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(passwordChangeRequiredFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 
@@ -47,11 +52,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/landing.html", "/login", "/login.html", "/403", "/403.html",
-                                "/dashboard.html", "/crud.html", "/detail.html",
+                                "/change-password", "/change-password.html",
+                                "/dashboard.html", "/crud.html", "/detail.html", "/client-dashboard.html",
+                                "/mecanicien-dashboard.html",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/dashboard", "/clients/**", "/vehicules/**", "/mecaniciens/**", "/reparations/**",
-                                "/utilisateurs/**").permitAll()
+                                "/utilisateurs/**", "/client/**", "/mecanicien/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception.accessDeniedPage("/403"))

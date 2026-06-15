@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Espace mécanicien | GARAGIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body class="client-space-page">
+<main class="client-space-shell">
+    <header class="client-space-nav">
+        <a class="brand client-space-brand" href="/mecanicien/dashboard">
+            <img class="brand-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
+        </a>
+        <div class="client-space-user">
+            <span class="user-avatar" data-user-initials>MC</span>
+            <div>
+                <strong data-user-name>Mécanicien</strong>
+                <small data-user-role>Mécanicien</small>
+            </div>
+        </div>
+        <a class="ghost-button button-link" href="/" data-logout>
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            Déconnexion
+        </a>
+    </header>
+
+    <section class="client-hero">
+        <div>
+            <p class="eyebrow">Espace mécanicien</p>
+            <h1 id="mecanicienName">Bienvenue</h1>
+            <p id="mecanicienSpecialite">Consultez uniquement les réparations qui vous sont affectées.</p>
+        </div>
+    </section>
+
+    <section class="stats-grid client-stats" aria-label="Indicateurs mécanicien">
+        <article class="stat-card accent-yellow">
+            <span>Réparations en cours</span>
+            <strong id="mecanicienActiveRepairsCount">0</strong>
+        </article>
+        <article class="stat-card accent-green">
+            <span>Réparations terminées</span>
+            <strong id="mecanicienDoneRepairsCount">0</strong>
+        </article>
+        <article class="stat-card accent-red">
+            <span>Montant affecté</span>
+            <strong id="mecanicienTotalAmount">0 GNF</strong>
+        </article>
+    </section>
+
+    <section class="panel page-card">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Atelier</p>
+                <h3>Mes réparations affectées</h3>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Véhicule</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Statut</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody id="mecanicienRepairs">
+                <tr><td class="empty" colspan="6">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<div class="toast" id="toast" hidden></div>
+<script src="/js/auth.js?v=7"></script>
+<script src="/js/mecanicien-dashboard.js?v=1"></script>
+</body>
+</html>

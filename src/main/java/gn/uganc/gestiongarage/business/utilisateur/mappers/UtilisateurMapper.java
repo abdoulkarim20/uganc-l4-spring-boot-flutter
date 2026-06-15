@@ -15,6 +15,7 @@ public class UtilisateurMapper {
         utilisateurDto.setTelephone(utilisateur.getTelephone());
         utilisateurDto.setUsername(utilisateur.getUsername());
         utilisateurDto.setRole(utilisateur.getRole());
+        utilisateurDto.setMustChangePassword(utilisateur.isMustChangePassword());
         return utilisateurDto;
     }
 
@@ -27,6 +28,7 @@ public class UtilisateurMapper {
         utilisateur.setUsername(utilisateurDto.getUsername());
         utilisateur.setPassword(utilisateurDto.getPassword());
         utilisateur.setRole(utilisateurDto.getRole());
+        utilisateur.setMustChangePassword(utilisateurDto.isMustChangePassword());
         return utilisateur;
     }
 }

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Espace client | GARAGIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body class="client-space-page">
+<main class="client-space-shell">
+    <header class="client-space-nav">
+        <a class="brand client-space-brand" href="/client/dashboard">
+            <img class="brand-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
+        </a>
+        <div class="client-space-user">
+            <span class="user-avatar" data-user-initials>CL</span>
+            <div>
+                <strong data-user-name>Client</strong>
+                <small data-user-role>Client</small>
+            </div>
+        </div>
+        <a class="ghost-button button-link" href="/" data-logout>
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            Déconnexion
+        </a>
+    </header>
+
+    <section class="client-hero">
+        <div>
+            <p class="eyebrow">Espace client</p>
+            <h1 id="clientName">Bienvenue</h1>
+            <p>Consultez vos véhicules, les réparations effectuées et le montant total de vos dépenses.</p>
+        </div>
+    </section>
+
+    <section class="stats-grid client-stats" aria-label="Indicateurs client">
+        <article class="stat-card accent-blue">
+            <span>Mes véhicules</span>
+            <strong id="clientVehiclesCount">0</strong>
+        </article>
+        <article class="stat-card accent-yellow">
+            <span>Réparations en cours</span>
+            <strong id="clientActiveRepairsCount">0</strong>
+        </article>
+        <article class="stat-card accent-red">
+            <span>Dépenses réalisées</span>
+            <strong id="clientTotalSpent">0 GNF</strong>
+        </article>
+    </section>
+
+    <section class="client-space-grid">
+        <article class="panel page-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Garage</p>
+                    <h3>Mes véhicules</h3>
+                </div>
+            </div>
+            <div class="client-card-list" id="clientVehicles"></div>
+        </article>
+
+        <article class="panel page-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Historique</p>
+                    <h3>Mes réparations</h3>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Véhicule</th>
+                        <th>Mécanicien</th>
+                        <th>Statut</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="clientRepairs">
+                    <tr><td class="empty" colspan="5">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+</main>
+<div class="toast" id="toast" hidden></div>
+<script src="/js/auth.js?v=7"></script>
+<script src="/js/client-dashboard.js?v=1"></script>
+</body>
+</html>

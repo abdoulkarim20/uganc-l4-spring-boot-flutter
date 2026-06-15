@@ -22,6 +22,8 @@ public class Utilisateur {
     @Column(length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleUser role;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean mustChangePassword = false;
 
     public Long getId() {
         return id;
@@ -77,5 +79,13 @@ public class Utilisateur {
 
     public void setRole(RoleUser role) {
         this.role = role;
+    }
+
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
+    }
+
+    public void setMustChangePassword(boolean mustChangePassword) {
+        this.mustChangePassword = mustChangePassword;
     }
 }

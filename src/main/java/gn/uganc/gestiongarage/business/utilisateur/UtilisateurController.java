@@ -40,7 +40,7 @@ public class UtilisateurController {
         return utilisateurService.getById(id);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/detail/{username}")
     public UtilisateurDto getUserByUsername(@PathVariable String username) {
         return utilisateurService.getUserByUsername(username);
     }

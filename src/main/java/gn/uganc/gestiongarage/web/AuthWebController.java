@@ -10,4 +10,9 @@ public class AuthWebController {
     public String login() {
         return "forward:/login.html";
     }
+
+    @GetMapping("/change-password")
+    public String changePassword() {
+        return "forward:/change-password.html";
+    }
 }

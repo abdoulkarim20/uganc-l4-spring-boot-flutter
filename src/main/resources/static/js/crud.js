@@ -49,7 +49,8 @@ const configs = {
             {name: "nom", label: "Nom", required: true},
             {name: "prenom", label: "Prenom", required: true},
             {name: "telephone", label: "Telephone", required: true},
-            {name: "adresse", label: "Adresse"}
+            {name: "adresse", label: "Adresse"},
+            {name: "password", label: "Mot de passe du compte client", type: "password", required: () => mode === "create", full: true, visible: () => mode === "create"}
         ]
     },
     vehicules: {
@@ -88,7 +89,8 @@ const configs = {
             {name: "nom", label: "Nom", required: true},
             {name: "prenom", label: "Prenom", required: true},
             {name: "telephone", label: "Telephone", required: true},
-            {name: "specialite", label: "Specialite", required: true}
+            {name: "specialite", label: "Specialite", required: true},
+            {name: "password", label: "Mot de passe du compte mécanicien", type: "password", required: () => mode === "create", full: true, visible: () => mode === "create"}
         ]
     },
     reparations: {
@@ -234,7 +236,7 @@ function renderForm(item) {
     document.getElementById("listView").hidden = true;
     document.getElementById("formView").hidden = false;
     document.getElementById("cancelLink").href = `/${resource}`;
-    document.getElementById("formFields").innerHTML = `${renderFormContext()}${config.fields.map((field) => renderField(field, item)).join("")}`;
+    document.getElementById("formFields").innerHTML = `${renderFormContext()}${visibleFields(config).map((field) => renderField(field, item)).join("")}`;
 }
 
 function renderCell(column, item) {
@@ -273,7 +275,7 @@ async function saveRecord(event) {
     const form = new FormData(event.currentTarget);
     const payload = {};
 
-    config.fields.forEach((field) => {
+    visibleFields(config).forEach((field) => {
         let value = form.get(field.name);
         if (field.type === "number") {
             value = value === "" ? null : Number(value);
@@ -299,6 +301,10 @@ async function saveRecord(event) {
         target.textContent = error.message;
         target.hidden = false;
     }
+}
+
+function visibleFields(config) {
+    return config.fields.filter((field) => !field.visible || field.visible());
 }
 
 async function deleteRecord(id) {

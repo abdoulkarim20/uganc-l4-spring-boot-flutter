@@ -29,6 +29,7 @@ public class UtilisateurImpl implements IUtilisateur {
     public UtilisateurDto create(UtilisateurDto utilisateurDto) {
         Utilisateur utilisateur = utilisateurMapper.toEntity(utilisateurDto);
         utilisateur.setPassword(passwordEncoder.encode(utilisateurDto.getPassword()));
+        utilisateur.setMustChangePassword(utilisateur.getRole() != RoleUser.ADMIN);
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
     }
 

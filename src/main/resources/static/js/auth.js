@@ -9,7 +9,8 @@ function setAuthSession(authResponse) {
     localStorage.setItem(AUTH_TOKEN_KEY, authResponse.accessToken);
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify({
         username: authResponse.username,
-        roles: authResponse.roles || []
+        roles: authResponse.roles || [],
+        mustChangePassword: Boolean(authResponse.mustChangePassword)
     }));
 }
 
@@ -27,6 +28,74 @@ function isAdminSession() {
     }
 }
 
+function isClientSession() {
+    const user = getAuthUser();
+    return Array.isArray(user.roles) && user.roles.includes("ROLE_CLIENT");
+}
+
+function isMecanicienSession() {
+    const user = getAuthUser();
+    return Array.isArray(user.roles) && user.roles.includes("ROLE_MECANICIEN");
+}
+
+function isPasswordChangeRequired() {
+    return Boolean(getAuthUser().mustChangePassword);
+}
+
+function updatePasswordChangeState(required) {
+    const user = getAuthUser();
+    user.mustChangePassword = Boolean(required);
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+}
+
+function redirectAfterPasswordChange() {
+    if (isAdminSession()) {
+        window.location.href = "/dashboard";
+        return;
+    }
+    if (isClientSession()) {
+        window.location.href = "/client/dashboard";
+        return;
+    }
+    if (isMecanicienSession()) {
+        window.location.href = "/mecanicien/dashboard";
+        return;
+    }
+    window.location.href = "/";
+}
+
+function requireClientSession() {
+    if (!getAuthToken()) {
+        window.location.href = "/login";
+        return false;
+    }
+    if (!isClientSession() && !isAdminSession()) {
+        window.location.href = "/403";
+        return false;
+    }
+    if (isPasswordChangeRequired() && window.location.pathname !== "/change-password") {
+        window.location.href = "/change-password";
+        return false;
+    }
+    return true;
+}
+
+function requireMecanicienSession() {
+    if (!getAuthToken()) {
+        window.location.href = "/login";
+        return false;
+    }
+    if (!isMecanicienSession() && !isAdminSession()) {
+        window.location.href = "/403";
+        return false;
+    }
+    if (isPasswordChangeRequired() && window.location.pathname !== "/change-password") {
+        window.location.href = "/change-password";
+        return false;
+    }
+    return true;
+}
+
 function getAuthUser() {
     try {
         return JSON.parse(localStorage.getItem(AUTH_USER_KEY) || "{}");
@@ -42,6 +111,10 @@ function requireAdminSession() {
     }
     if (!isAdminSession()) {
         window.location.href = "/403";
+        return false;
+    }
+    if (isPasswordChangeRequired() && window.location.pathname !== "/change-password") {
+        window.location.href = "/change-password";
         return false;
     }
     return true;
@@ -68,6 +141,12 @@ async function authFetch(url, options = {}) {
     if (response.status === 403) {
         window.location.href = "/403";
         throw new Error("Accès refusé");
+    }
+
+    if (response.status === 428) {
+        updatePasswordChangeState(true);
+        window.location.href = "/change-password";
+        throw new Error("Changement de mot de passe requis");
     }
 
     return response;

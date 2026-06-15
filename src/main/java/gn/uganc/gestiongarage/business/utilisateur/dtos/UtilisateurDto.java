@@ -11,6 +11,7 @@ public class UtilisateurDto {
     private String username;
     private String password;
     private RoleUser role;
+    private boolean mustChangePassword;
 
     public Long getId() {
         return id;
@@ -66,5 +67,13 @@ public class UtilisateurDto {
 
     public void setRole(RoleUser role) {
         this.role = role;
+    }
+
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
+    }
+
+    public void setMustChangePassword(boolean mustChangePassword) {
+        this.mustChangePassword = mustChangePassword;
     }
 }

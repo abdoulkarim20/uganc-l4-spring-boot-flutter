@@ -7,6 +7,7 @@ public class MecanicienDto {
     private String prenom;
     private String telephone;
     private String specialite;
+    private String password;
 
     public Long getId() {
         return id;
@@ -46,5 +47,13 @@ public class MecanicienDto {
 
     public void setSpecialite(String specialite) {
         this.specialite = specialite;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
