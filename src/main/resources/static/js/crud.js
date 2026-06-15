@@ -23,6 +23,12 @@ const moneyFormat = new Intl.NumberFormat("fr-FR", {
     maximumFractionDigits: 0
 });
 
+if (!requireAdminSession()) {
+    throw new Error("Authentification requise");
+}
+
+wireLogoutLinks();
+
 const configs = {
     clients: {
         eyebrow: "Relation client",
@@ -269,11 +275,9 @@ async function deleteRecord(id) {
 }
 
 async function requestJson(url, options = {}) {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
         ...options,
         headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
             ...(options.headers || {})
         }
     });

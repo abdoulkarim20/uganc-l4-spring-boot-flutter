@@ -14,11 +14,7 @@
 <div class="app-shell">
     <aside class="sidebar" aria-label="Navigation principale">
         <div class="brand">
-            <img class="brand-logo" src="/images/garagix-logo.png" alt="GARAGIX">
-            <div>
-                <strong>GARAGIX</strong>
-                <small>Gestion garage</small>
-            </div>
+            <img class="brand-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
         </div>
 
         <nav class="menu">
@@ -63,7 +59,7 @@
             <div class="topbar-actions">
                 <a class="ghost-button button-link" href="/clients/create">Nouveau client</a>
                 <a class="primary-button button-link" href="/reparations/create">Nouvelle réparation</a>
-                <a class="ghost-button button-link" href="/logout">Déconnexion</a>
+                <a class="ghost-button button-link" href="/" data-logout>Déconnexion</a>
             </div>
         </header>
 
@@ -99,6 +95,7 @@
 </div>
 
 <div class="toast" id="toast" hidden></div>
-<script src="/js/crud.js"></script>
+<script src="/js/auth.js?v=3"></script>
+<script src="/js/crud.js?v=3"></script>
 </body>
 </html>

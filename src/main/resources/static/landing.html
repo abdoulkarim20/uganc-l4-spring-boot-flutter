@@ -13,13 +13,12 @@
 <body class="landing-page">
 <header class="landing-nav">
     <a class="brand landing-brand" href="/">
-        <img class="brand-logo landing-logo" src="/images/garagix-logo.png" alt="GARAGIX">
-        <div>
-            <strong>GARAGIX</strong>
-            <small>Gestion garage</small>
-        </div>
+        <img class="brand-logo landing-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
     </a>
-    <nav class="landing-links" aria-label="Navigation">
+    <button class="landing-menu-toggle" type="button" aria-label="Ouvrir le menu" aria-controls="landing-menu" aria-expanded="false">
+        <i class="bi bi-list"></i>
+    </button>
+    <nav class="landing-links" id="landing-menu" aria-label="Navigation">
         <a href="#solution">Solution</a>
         <a href="#modules">Modules</a>
         <a href="#vision">Vision</a>
@@ -50,35 +49,41 @@
 
         <div class="landing-slider" aria-label="Mises en avant GARAGIX">
             <div class="slide-card slide-repair">
-                <span class="slide-kicker">Réparations</span>
-                <i class="bi bi-clipboard2-check"></i>
-                <h2>Suivre chaque intervention</h2>
-                <p>Statut, véhicule, mécanicien et montant restent visibles au bon endroit.</p>
-                <div class="slide-meta">
-                    <strong>36</strong>
-                    <span>interventions suivies</span>
+                <img src="/images/landing-repair.png" alt="Atelier de réparation connecté">
+                <div class="slide-content">
+                    <span class="slide-kicker">Atelier</span>
+                    <h2>Piloter les réparations</h2>
+                    <p>Clients, véhicules, mécaniciens et interventions restent visibles dans un même espace.</p>
+                    <div class="slide-meta">
+                        <strong>Suivi clair</strong>
+                        <span>du diagnostic à la livraison</span>
+                    </div>
                 </div>
             </div>
 
             <div class="slide-card slide-diagnostic">
-                <span class="slide-kicker">Diagnostic</span>
-                <i class="bi bi-search-heart"></i>
-                <h2>Comprendre avant d’agir</h2>
-                <p>Préparez l’atelier avec des informations claires sur la panne et le véhicule.</p>
-                <div class="slide-meta">
-                    <strong>Rapide</strong>
-                    <span>lecture des dossiers</span>
+                <img src="/images/landing-assistance.png" alt="Assistance panne avec géolocalisation">
+                <div class="slide-content">
+                    <span class="slide-kicker">Assistance H24</span>
+                    <h2>Trouver une aide proche</h2>
+                    <p>Le client en panne pourra envoyer sa position, des images et recevoir une assistance rapide.</p>
+                    <div class="slide-meta">
+                        <strong>Géolocalisé</strong>
+                        <span>garage proche et intervention rapide</span>
+                    </div>
                 </div>
             </div>
 
             <div class="slide-card slide-expertise">
-                <span class="slide-kicker">Expertise</span>
-                <i class="bi bi-tools"></i>
-                <h2>Valoriser les mécaniciens</h2>
-                <p>Consultez les spécialités et les réparations affectées à chaque technicien.</p>
-                <div class="slide-meta">
-                    <strong>Équipe</strong>
-                    <span>mieux organisée</span>
+                <img src="/images/landing-parts.png" alt="Recherche de pièces automobile par partenaires">
+                <div class="slide-content">
+                    <span class="slide-kicker">Pièces</span>
+                    <h2>Demander et comparer</h2>
+                    <p>Une demande de pièce pourra être vue par les partenaires qui proposent leurs prix.</p>
+                    <div class="slide-meta">
+                        <strong>Plus fluide</strong>
+                        <span>pièces, prix et disponibilité</span>
+                    </div>
                 </div>
             </div>
 
@@ -203,5 +208,25 @@
         <a class="primary-button button-link" href="/login">Connexion</a>
     </section>
 </main>
+<script>
+    const landingToggle = document.querySelector(".landing-menu-toggle");
+    const landingMenu = document.querySelector(".landing-links");
+
+    landingToggle?.addEventListener("click", () => {
+        const isOpen = document.body.classList.toggle("landing-menu-open");
+        landingToggle.setAttribute("aria-expanded", String(isOpen));
+        landingToggle.innerHTML = isOpen ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
+    });
+
+    landingMenu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            document.body.classList.remove("landing-menu-open");
+            landingToggle?.setAttribute("aria-expanded", "false");
+            if (landingToggle) {
+                landingToggle.innerHTML = '<i class="bi bi-list"></i>';
+            }
+        });
+    });
+</script>
 </body>
 </html>

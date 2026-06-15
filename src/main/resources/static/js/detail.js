@@ -22,6 +22,12 @@ const moneyFormat = new Intl.NumberFormat("fr-FR", {
     maximumFractionDigits: 0
 });
 
+if (!requireAdminSession()) {
+    throw new Error("Authentification requise");
+}
+
+wireLogoutLinks();
+
 document.querySelector(".sidebar-toggle").addEventListener("click", () => {
     document.body.classList.toggle("menu-open");
 });
@@ -169,7 +175,7 @@ function detailConfig(name, item) {
 }
 
 async function requestJson(url) {
-    const response = await fetch(url, {headers: {"Accept": "application/json"}});
+    const response = await authFetch(url);
     if (!response.ok) {
         throw new Error(`Erreur HTTP ${response.status}`);
     }

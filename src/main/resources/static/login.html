@@ -13,15 +13,11 @@
 <main class="login-shell">
     <section class="login-panel">
         <div class="brand login-brand">
-            <img class="brand-logo login-logo" src="/images/garagix-logo.png" alt="GARAGIX">
-            <div>
-                <strong>GARAGIX</strong>
-                <small>Connexion sécurisée</small>
-            </div>
+            <img class="brand-logo login-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
         </div>
         <p class="eyebrow">Authentification</p>
         <h1>Se connecter</h1>
-        <form class="login-form" method="post" action="/login">
+        <form class="login-form">
             <div class="form-field full">
                 <label for="username">Username</label>
                 <input id="username" name="username" type="text" autocomplete="username" required autofocus>
@@ -35,11 +31,7 @@
         </form>
     </section>
 </main>
-<script>
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("error")) {
-        document.querySelector("[data-login-error]").hidden = false;
-    }
-</script>
+<script src="/js/auth.js?v=3"></script>
+<script src="/js/login.js?v=3"></script>
 </body>
 </html>

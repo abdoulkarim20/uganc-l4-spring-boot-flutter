@@ -79,6 +79,11 @@ textarea {
     padding: 4px;
 }
 
+.brand-logo-only {
+    width: 120px;
+    height: 58px;
+}
+
 .brand strong,
 .brand small {
     display: block;
@@ -727,8 +732,8 @@ td {
 }
 
 .login-logo {
-    width: 72px;
-    height: 54px;
+    width: 150px;
+    height: 72px;
 }
 
 .login-form {
@@ -739,6 +744,15 @@ td {
 
 .login-button {
     width: 100%;
+}
+
+.access-denied-panel h1 {
+    margin-bottom: 14px;
+}
+
+.access-denied-copy {
+    color: var(--muted);
+    line-height: 1.65;
 }
 
 .landing-page {
@@ -769,14 +783,33 @@ td {
 }
 
 .landing-logo {
-    width: 76px;
-    height: 56px;
+    width: 150px;
+    height: 72px;
 }
 
 .landing-links {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.landing-menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--text);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+}
+
+.landing-menu-toggle i {
+    font-size: 24px;
+    line-height: 1;
 }
 
 .landing-links a {
@@ -828,8 +861,8 @@ td {
 .landing-copy h1 {
     max-width: 720px;
     margin-bottom: 18px;
-    font-size: clamp(34px, 4.6vw, 56px);
-    line-height: 1.08;
+    font-size: 48px;
+    line-height: 1.12;
     letter-spacing: 0;
 }
 
@@ -888,30 +921,48 @@ td {
 .slide-card {
     position: absolute;
     inset: 16px;
-    padding: 30px;
     border-radius: var(--radius);
     color: #fff;
-    display: grid;
-    align-content: space-between;
+    overflow: hidden;
     opacity: 0;
     transform: translateX(24px) scale(0.98);
     animation: garagixSlide 12s infinite;
+    background: #10182f;
 }
 
-.slide-card .bi {
-    width: 58px;
-    height: 58px;
-    border-radius: var(--radius);
+.slide-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(90deg, rgba(10, 18, 37, 0.9) 0%, rgba(10, 18, 37, 0.62) 42%, rgba(10, 18, 37, 0.2) 100%),
+        linear-gradient(0deg, rgba(10, 18, 37, 0.58) 0%, rgba(10, 18, 37, 0.06) 58%);
+}
+
+.slide-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.02);
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    min-height: 100%;
+    padding: 30px;
     display: grid;
-    place-items: center;
-    background: rgba(255, 255, 255, 0.14);
-    font-size: 28px;
+    align-content: end;
 }
 
 .slide-card h2 {
     max-width: 420px;
-    margin: 42px 0 12px;
-    font-size: 34px;
+    margin: 18px 0 12px;
+    font-size: 31px;
     line-height: 1.12;
 }
 
@@ -938,9 +989,11 @@ td {
 .slide-meta {
     width: fit-content;
     min-width: 190px;
+    margin-top: 26px;
     padding: 16px;
     border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
 }
 
 .slide-meta strong,
@@ -949,7 +1002,7 @@ td {
 }
 
 .slide-meta strong {
-    font-size: 28px;
+    font-size: 23px;
 }
 
 .slide-meta span {
@@ -960,17 +1013,14 @@ td {
 }
 
 .slide-repair {
-    background: linear-gradient(135deg, #10182f 0%, #273858 100%);
     animation-delay: 0s;
 }
 
 .slide-diagnostic {
-    background: linear-gradient(135deg, #0f3b57 0%, #4f7df3 100%);
     animation-delay: 4s;
 }
 
 .slide-expertise {
-    background: linear-gradient(135deg, #301a27 0%, #ff3f4c 100%);
     animation-delay: 8s;
 }
 
@@ -1141,13 +1191,15 @@ td {
 
 .process-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
 }
 
 .process-grid article {
-    min-height: 190px;
-    padding: 24px;
+    min-height: 178px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
 }
 
 .process-grid span {
@@ -1156,12 +1208,14 @@ td {
 }
 
 .process-grid h3 {
-    margin-top: 34px;
+    margin-top: 26px;
+    margin-bottom: 10px;
 }
 
 .process-grid p {
     color: var(--muted);
     line-height: 1.58;
+    margin-bottom: 0;
 }
 
 .feature-grid {
@@ -1380,10 +1434,42 @@ body.menu-open .sidebar {
     }
 
     .landing-nav {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 18px 0;
-        position: static;
+        min-height: 70px;
+        padding: 10px 0;
+        position: sticky;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        background: rgba(243, 246, 251, 0.88);
+    }
+
+    .landing-logo {
+        width: 118px;
+        height: 56px;
+    }
+
+    .landing-menu-toggle {
+        display: inline-flex;
+        margin-left: auto;
+    }
+
+    .landing-links {
+        display: none;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: var(--shadow-soft);
+    }
+
+    body.landing-menu-open .landing-links {
+        display: flex;
+    }
+
+    .landing-links a {
+        width: 100%;
+        justify-content: center;
     }
 
     .landing-hero {
@@ -1416,16 +1502,25 @@ body.menu-open .sidebar {
     }
 
     .landing-slider {
-        min-height: 410px;
+        min-height: 430px;
     }
 
-    .slide-card {
+    .slide-card::after {
+        background:
+            linear-gradient(180deg, rgba(10, 18, 37, 0.22) 0%, rgba(10, 18, 37, 0.78) 48%, rgba(10, 18, 37, 0.94) 100%);
+    }
+
+    .slide-card img {
+        object-position: center top;
+    }
+
+    .slide-content {
         padding: 22px;
     }
 
     .slide-card h2 {
-        margin-top: 28px;
-        font-size: 28px;
+        margin-top: 16px;
+        font-size: 25px;
     }
 
     .slide-card p {
@@ -1435,6 +1530,7 @@ body.menu-open .sidebar {
     .slide-meta {
         min-width: 0;
         width: 100%;
+        margin-top: 20px;
     }
 
     .slider-dots {
@@ -1454,6 +1550,20 @@ body.menu-open .sidebar {
     .section-heading h2,
     .future-copy h2 {
         font-size: 30px;
+    }
+
+    .process-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .process-grid article {
+        min-height: 0;
+        padding: 18px;
+    }
+
+    .process-grid h3 {
+        margin-top: 18px;
     }
 
     .landing-cta {

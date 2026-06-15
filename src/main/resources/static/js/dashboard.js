@@ -18,6 +18,11 @@ const moneyFormat = new Intl.NumberFormat("fr-FR", {
     maximumFractionDigits: 0
 });
 
+if (requireAdminSession()) {
+    wireLogoutLinks();
+    loadDashboard();
+}
+
 document.querySelector(".sidebar-toggle").addEventListener("click", () => {
     document.body.classList.toggle("menu-open");
 });
@@ -25,8 +30,6 @@ document.querySelector(".sidebar-toggle").addEventListener("click", () => {
 document.querySelectorAll(".menu-link").forEach((link) => {
     link.addEventListener("click", () => document.body.classList.remove("menu-open"));
 });
-
-loadDashboard();
 
 async function loadDashboard() {
     const entries = await Promise.allSettled(
@@ -44,7 +47,7 @@ async function loadDashboard() {
 }
 
 async function fetchCollection(url) {
-    const response = await fetch(url, {headers: {"Accept": "application/json"}});
+    const response = await authFetch(url);
     if (!response.ok) {
         throw new Error(`Erreur HTTP ${response.status}`);
     }
