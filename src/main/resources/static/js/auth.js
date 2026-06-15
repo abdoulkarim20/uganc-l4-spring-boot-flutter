@@ -20,10 +20,18 @@ function clearAuthSession() {
 
 function isAdminSession() {
     try {
-        const user = JSON.parse(localStorage.getItem(AUTH_USER_KEY) || "{}");
+        const user = getAuthUser();
         return Array.isArray(user.roles) && user.roles.includes("ROLE_ADMIN");
     } catch (error) {
         return false;
+    }
+}
+
+function getAuthUser() {
+    try {
+        return JSON.parse(localStorage.getItem(AUTH_USER_KEY) || "{}");
+    } catch (error) {
+        return {};
     }
 }
 
@@ -66,6 +74,7 @@ async function authFetch(url, options = {}) {
 }
 
 function wireLogoutLinks() {
+    renderAuthenticatedUser();
     document.querySelectorAll("[data-logout]").forEach((link) => {
         link.addEventListener("click", (event) => {
             event.preventDefault();
@@ -73,4 +82,39 @@ function wireLogoutLinks() {
             window.location.href = "/";
         });
     });
+}
+
+function renderAuthenticatedUser() {
+    const user = getAuthUser();
+    const username = user.username || "Utilisateur";
+    const primaryRole = Array.isArray(user.roles) ? user.roles[0] : "";
+    const role = formatUserRole(primaryRole);
+    const initials = username
+        .split(/[.\s_-]+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase() || "UT";
+
+    document.querySelectorAll("[data-user-name]").forEach((target) => {
+        target.textContent = username;
+    });
+    document.querySelectorAll("[data-user-role]").forEach((target) => {
+        target.textContent = role;
+    });
+    document.querySelectorAll("[data-user-initials]").forEach((target) => {
+        target.textContent = initials;
+    });
+}
+
+function formatUserRole(role = "") {
+    const normalized = role.replace(/^ROLE_/, "");
+    const labels = {
+        ADMIN: "Administrateur",
+        ADMIN_GARAGE: "Admin garage",
+        MECANICIEN: "Mécanicien",
+        CLIENT: "Client"
+    };
+    return labels[normalized] || normalized || "Profil";
 }

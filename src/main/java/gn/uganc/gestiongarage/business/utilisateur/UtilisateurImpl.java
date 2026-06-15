@@ -2,6 +2,9 @@ package gn.uganc.gestiongarage.business.utilisateur;
 
 import gn.uganc.gestiongarage.business.utilisateur.dtos.UtilisateurDto;
 import gn.uganc.gestiongarage.business.utilisateur.mappers.UtilisateurMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -39,6 +42,14 @@ public class UtilisateurImpl implements IUtilisateur {
     @Override
     public UtilisateurDto getById(Long id) {
         Utilisateur utilisateur = findUtilisateur(id);
+        return utilisateurMapper.toDto(utilisateur);
+    }
+
+    @Override
+    public UtilisateurDto getUserByUsername(String username) {
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable: " + username));
+        utilisateur.setPassword(null);
         return utilisateurMapper.toDto(utilisateur);
     }
 

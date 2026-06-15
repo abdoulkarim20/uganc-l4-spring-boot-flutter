@@ -134,6 +134,63 @@ textarea {
     background: var(--nav-soft);
 }
 
+.sidebar-footer {
+    margin-top: auto;
+    display: grid;
+    gap: 10px;
+}
+
+.user-profile {
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    color: #fff;
+    background: var(--primary);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.user-profile strong,
+.user-profile small {
+    display: block;
+}
+
+.user-profile strong {
+    max-width: 162px;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-profile small {
+    margin-top: 3px;
+    color: #a8b3c7;
+    font-weight: 700;
+}
+
+.logout-link {
+    color: #fecdd3;
+}
+
+.logout-link:hover {
+    color: #fff;
+    background: rgba(255, 63, 76, 0.2);
+}
+
 .icon {
     width: 28px;
     height: 28px;

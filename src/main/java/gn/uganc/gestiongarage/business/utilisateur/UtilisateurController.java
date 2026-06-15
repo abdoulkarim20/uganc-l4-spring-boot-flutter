@@ -40,6 +40,11 @@ public class UtilisateurController {
         return utilisateurService.getById(id);
     }
 
+    @GetMapping("/{username}")
+    public UtilisateurDto getUserByUsername(@PathVariable String username) {
+        return utilisateurService.getUserByUsername(username);
+    }
+
     @PutMapping("/{id}")
     public UtilisateurDto update(@PathVariable Long id, @RequestBody UtilisateurDto utilisateurDto) {
         return utilisateurService.update(id, utilisateurDto);

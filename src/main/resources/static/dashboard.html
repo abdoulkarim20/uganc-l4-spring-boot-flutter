@@ -42,17 +42,21 @@
                 <span class="icon">UT</span>
                 Utilisateurs
             </a>
-            <!--<a class="menu-link" href="/swagger-ui.html">
-                <span class="icon">?</span>
-                Documentation API
-            </a>-->
         </nav>
 
-        <!--<div class="sidebar-card">
-            <small>État du service</small>
-            <strong id="serviceStatus">Connexion...</strong>
-            <span id="serviceHint">Lecture des modules garage</span>
-        </div>-->
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <span class="user-avatar" data-user-initials>--</span>
+                <div>
+                    <strong data-user-name>Utilisateur</strong>
+                    <small data-user-role>Profil</small>
+                </div>
+            </div>
+            <a class="menu-link logout-link" href="/" data-logout>
+                <span class="icon"><i class="bi bi-box-arrow-right" aria-hidden="true"></i></span>
+                Déconnexion
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -69,7 +73,6 @@
             <div class="topbar-actions">
                 <a class="ghost-button button-link" href="/clients/create">Nouveau client</a>
                 <a class="primary-button button-link" href="/reparations/create">Nouvelle réparation</a>
-                <a class="ghost-button button-link" href="/" data-logout>Déconnexion</a>
             </div>
         </header>
 
@@ -190,7 +193,7 @@
 </div>
 
 <div class="toast" id="toast" hidden></div>
-<script src="/js/auth.js?v=3"></script>
+<script src="/js/auth.js?v=4"></script>
 <script src="/js/dashboard.js?v=3"></script>
 </body>
 </html>

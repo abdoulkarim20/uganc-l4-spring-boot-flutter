@@ -11,6 +11,7 @@ public interface IUtilisateur {
     List<UtilisateurDto> getAll();
 
     UtilisateurDto getById(Long id);
+    UtilisateurDto getUserByUsername(String username);
 
     UtilisateurDto update(Long id, UtilisateurDto utilisateurDto);
 
