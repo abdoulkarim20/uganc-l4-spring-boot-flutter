@@ -71,6 +71,11 @@ public class UtilisateurImpl implements IUtilisateur {
     @Override
     public void delete(Long id) {
         Utilisateur utilisateur = findUtilisateur(id);
+        if ("admin".equals(utilisateur.getUsername())) {
+            throw new RuntimeException(
+                    "Impossible de supprimer l'utilisateur administrateur."
+            );
+        }
         utilisateurRepository.delete(utilisateur);
     }
 
