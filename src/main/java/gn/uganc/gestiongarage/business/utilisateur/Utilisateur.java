@@ -20,7 +20,8 @@ public class Utilisateur {
     @Column(nullable = false)
     private String password;
     @Column(length = 30, nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleUser role;
 
     public Long getId() {
         return id;
@@ -70,11 +71,11 @@ public class Utilisateur {
         this.password = password;
     }
 
-    public String getRole() {
+    public RoleUser getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleUser role) {
         this.role = role;
     }
 }

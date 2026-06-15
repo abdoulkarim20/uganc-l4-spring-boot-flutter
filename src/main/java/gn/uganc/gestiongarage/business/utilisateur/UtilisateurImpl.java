@@ -2,7 +2,9 @@ package gn.uganc.gestiongarage.business.utilisateur;
 
 import gn.uganc.gestiongarage.business.utilisateur.dtos.UtilisateurDto;
 import gn.uganc.gestiongarage.business.utilisateur.mappers.UtilisateurMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -11,15 +13,19 @@ public class UtilisateurImpl implements IUtilisateur {
 
     private final UtilisateurRepository utilisateurRepository;
     private final UtilisateurMapper utilisateurMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UtilisateurImpl(UtilisateurRepository utilisateurRepository, UtilisateurMapper utilisateurMapper) {
+    public UtilisateurImpl(UtilisateurRepository utilisateurRepository, UtilisateurMapper utilisateurMapper,
+                           PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
         this.utilisateurMapper = utilisateurMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UtilisateurDto create(UtilisateurDto utilisateurDto) {
         Utilisateur utilisateur = utilisateurMapper.toEntity(utilisateurDto);
+        utilisateur.setPassword(passwordEncoder.encode(utilisateurDto.getPassword()));
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
     }
 
@@ -43,7 +49,9 @@ public class UtilisateurImpl implements IUtilisateur {
         utilisateur.setPrenom(utilisateurDto.getPrenom());
         utilisateur.setTelephone(utilisateurDto.getTelephone());
         utilisateur.setUsername(utilisateurDto.getUsername());
-        utilisateur.setPassword(utilisateurDto.getPassword());
+        if (StringUtils.hasText(utilisateurDto.getPassword())) {
+            utilisateur.setPassword(passwordEncoder.encode(utilisateurDto.getPassword()));
+        }
         utilisateur.setRole(utilisateurDto.getRole());
         return utilisateurMapper.toDto(utilisateurRepository.save(utilisateur));
     }

@@ -14,7 +14,6 @@ public class UtilisateurMapper {
         utilisateurDto.setPrenom(utilisateur.getPrenom());
         utilisateurDto.setTelephone(utilisateur.getTelephone());
         utilisateurDto.setUsername(utilisateur.getUsername());
-        utilisateurDto.setPassword(utilisateur.getPassword());
         utilisateurDto.setRole(utilisateur.getRole());
         return utilisateurDto;
     }

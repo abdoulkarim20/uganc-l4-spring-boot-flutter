@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Connexion | Gestion Garage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-panel">
+        <div class="brand login-brand">
+            <img class="brand-logo login-logo" src="/images/garagix-logo.png" alt="GARAGIX">
+            <div>
+                <strong>GARAGIX</strong>
+                <small>Connexion sécurisée</small>
+            </div>
+        </div>
+        <p class="eyebrow">Authentification</p>
+        <h1>Se connecter</h1>
+        <form class="login-form" method="post" action="/login">
+            <div class="form-field full">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+            </div>
+            <div class="form-field full">
+                <label for="password">Mot de passe</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <p class="form-error" data-login-error hidden>Identifiants incorrects.</p>
+            <button class="primary-button login-button" type="submit">Connexion</button>
+        </form>
+    </section>
+</main>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("error")) {
+        document.querySelector("[data-login-error]").hidden = false;
+    }
+</script>
+</body>
+</html>

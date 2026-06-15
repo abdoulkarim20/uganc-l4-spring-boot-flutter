@@ -1,5 +1,7 @@
 package gn.uganc.gestiongarage.business.utilisateur.dtos;
 
+import gn.uganc.gestiongarage.business.utilisateur.RoleUser;
+
 public class UtilisateurDto {
 
     private Long id;
@@ -8,7 +10,7 @@ public class UtilisateurDto {
     private String telephone;
     private String username;
     private String password;
-    private String role;
+    private RoleUser role;
 
     public Long getId() {
         return id;
@@ -58,11 +60,11 @@ public class UtilisateurDto {
         this.password = password;
     }
 
-    public String getRole() {
+    public RoleUser getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleUser role) {
         this.role = role;
     }
 }
