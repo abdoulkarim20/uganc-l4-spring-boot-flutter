@@ -6,14 +6,16 @@ const endpoints = {
     clients: "/api/clients",
     vehicules: "/api/vehicules",
     mecaniciens: "/api/mecaniciens",
-    reparations: "/api/reparations"
+    reparations: "/api/reparations",
+    utilisateurs: "/api/utilisateurs"
 };
 
 const state = {
     clients: [],
     vehicules: [],
     mecaniciens: [],
-    reparations: []
+    reparations: [],
+    utilisateurs: []
 };
 
 const moneyFormat = new Intl.NumberFormat("fr-FR", {
@@ -70,6 +72,18 @@ function renderDetail(item) {
 }
 
 function renderRelated(item) {
+    if (resource === "reparations") {
+        const vehicle = findVehicle(item.vehiculeId);
+        const client = vehicle ? findClient(vehicle.clientId) : null;
+        const mechanic = findMechanic(item.mecanicienId);
+        renderRelatedTable("Personnes concernées", "Dossier réparation", ["Rôle", "Nom", "Contact"], [
+            ["Client", client ? entityLink("clients", client.id, fullName(client)) : "-", client?.telephone || "-"],
+            ["Mécanicien", mechanic ? entityLink("mecaniciens", mechanic.id, fullName(mechanic)) : "-", mechanic?.telephone || "-"],
+            ["Véhicule", vehicle ? entityLink("vehicules", vehicle.id, vehicleName(vehicle.id)) : "-", vehicle?.immatriculation || "-"]
+        ], (row) => row, [false, true, false]);
+        return;
+    }
+
     if (resource === "mecaniciens") {
         const repairs = state.reparations.filter((repair) => Number(repair.mecanicienId) === Number(item.id));
         renderRelatedTable("Réparations du mécanicien", "Atelier", ["Véhicule", "Date", "Statut", "Montant"], repairs, (repair) => [
@@ -159,14 +173,29 @@ function detailConfig(name, item) {
             ]
         };
     }
+    if (name === "utilisateurs") {
+        return {
+            eyebrow: "Sécurité",
+            title: fullName(item),
+            detailTitle: "Fiche utilisateur",
+            fields: [
+                ["Nom", item.nom],
+                ["Prénom", item.prenom],
+                ["Téléphone", item.telephone],
+                ["Identifiant", item.username],
+                ["Profil", roleLabel(item.role)]
+            ]
+        };
+    }
     return {
         eyebrow: "Atelier",
         title: `Réparation #${item.id}`,
         detailTitle: "Fiche réparation",
         fields: [
             ["Date", formatDate(item.dateReparation)],
-            ["Véhicule", vehicleName(item.vehiculeId)],
-            ["Mécanicien", mechanicName(item.mecanicienId)],
+            ["Client", repairClientLink(item), true],
+            ["Véhicule", entityLink("vehicules", item.vehiculeId, vehicleName(item.vehiculeId)), true],
+            ["Mécanicien", entityLink("mecaniciens", item.mecanicienId, mechanicName(item.mecanicienId)), true],
             ["Statut", statusBadge(item.statut), true],
             ["Montant", moneyFormat.format(Number(item.cout || 0))],
             ["Description", item.description]
@@ -183,18 +212,43 @@ async function requestJson(url) {
 }
 
 function clientName(id) {
-    const client = state.clients.find((entry) => Number(entry.id) === Number(id));
+    const client = findClient(id);
     return client ? fullName(client) : "-";
 }
 
 function mechanicName(id) {
-    const mechanic = state.mecaniciens.find((entry) => Number(entry.id) === Number(id));
+    const mechanic = findMechanic(id);
     return mechanic ? fullName(mechanic) : "-";
 }
 
 function vehicleName(id) {
-    const vehicle = state.vehicules.find((entry) => Number(entry.id) === Number(id));
+    const vehicle = findVehicle(id);
     return vehicle ? `${vehicle.immatriculation || ""} ${vehicle.marque || ""} ${vehicle.modele || ""}`.trim() : "-";
+}
+
+function repairClientLink(repair) {
+    const vehicle = findVehicle(repair.vehiculeId);
+    const client = vehicle ? findClient(vehicle.clientId) : null;
+    return client ? entityLink("clients", client.id, fullName(client)) : "-";
+}
+
+function entityLink(type, id, label) {
+    if (!id || !label || label === "-") {
+        return "-";
+    }
+    return `<a class="detail-link" href="/${type}/${encodeURIComponent(id)}">${escapeHtml(label)}</a>`;
+}
+
+function findClient(id) {
+    return state.clients.find((entry) => Number(entry.id) === Number(id));
+}
+
+function findMechanic(id) {
+    return state.mecaniciens.find((entry) => Number(entry.id) === Number(id));
+}
+
+function findVehicle(id) {
+    return state.vehicules.find((entry) => Number(entry.id) === Number(id));
 }
 
 function fullName(person) {
@@ -217,6 +271,16 @@ function statusClass(status = "") {
         return "progress";
     }
     return "";
+}
+
+function roleLabel(role = "") {
+    const labels = {
+        ADMIN: "Administrateur plateforme",
+        ADMIN_GARAGE: "Administrateur garage",
+        MECANICIEN: "Mécanicien",
+        CLIENT: "Client"
+    };
+    return labels[role] || role || "-";
 }
 
 function formatDate(value) {

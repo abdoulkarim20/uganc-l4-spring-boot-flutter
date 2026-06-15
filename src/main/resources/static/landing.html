@@ -22,7 +22,10 @@
         <a href="#solution">Solution</a>
         <a href="#modules">Modules</a>
         <a href="#vision">Vision</a>
-        <a class="ghost-button button-link" href="/login">Connexion</a>
+        <a class="landing-login button-link" href="/login">
+            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+            Connexion
+        </a>
     </nav>
 </header>
 
@@ -211,6 +214,16 @@
 <script>
     const landingToggle = document.querySelector(".landing-menu-toggle");
     const landingMenu = document.querySelector(".landing-links");
+    const sectionLinks = [...document.querySelectorAll('.landing-links a[href^="#"]')];
+    const landingSections = sectionLinks
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+    function setActiveLandingLink(sectionId) {
+        sectionLinks.forEach((link) => {
+            link.classList.toggle("active", link.getAttribute("href") === `#${sectionId}`);
+        });
+    }
 
     landingToggle?.addEventListener("click", () => {
         const isOpen = document.body.classList.toggle("landing-menu-open");
@@ -220,6 +233,10 @@
 
     landingMenu?.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", () => {
+            const targetId = link.getAttribute("href")?.replace("#", "");
+            if (targetId && link.getAttribute("href").startsWith("#")) {
+                setActiveLandingLink(targetId);
+            }
             document.body.classList.remove("landing-menu-open");
             landingToggle?.setAttribute("aria-expanded", "false");
             if (landingToggle) {
@@ -227,6 +244,22 @@
             }
         });
     });
+
+    if ("IntersectionObserver" in window) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible?.target?.id) {
+                setActiveLandingLink(visible.target.id);
+            }
+        }, {
+            rootMargin: "-28% 0px -50% 0px",
+            threshold: [0.18, 0.32, 0.5]
+        });
+
+        landingSections.forEach((section) => sectionObserver.observe(section));
+    }
 </script>
 </body>
 </html>

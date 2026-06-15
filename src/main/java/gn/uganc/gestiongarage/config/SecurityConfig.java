@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/dashboard.html", "/crud.html", "/detail.html",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/dashboard", "/clients/**", "/vehicules/**", "/mecaniciens/**", "/reparations/**").permitAll()
+                        .requestMatchers("/dashboard", "/clients/**", "/vehicules/**", "/mecaniciens/**", "/reparations/**",
+                                "/utilisateurs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception.accessDeniedPage("/403"))

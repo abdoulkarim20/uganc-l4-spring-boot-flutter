@@ -2,19 +2,22 @@ const pathParts = window.location.pathname.split("/").filter(Boolean);
 const resource = pathParts[0] || "clients";
 const mode = pathParts.includes("create") ? "create" : pathParts.includes("edit") ? "edit" : "list";
 const editId = mode === "edit" ? Number(pathParts[1]) : null;
+const queryParams = new URLSearchParams(window.location.search);
 
 const endpoints = {
     clients: "/api/clients",
     vehicules: "/api/vehicules",
     mecaniciens: "/api/mecaniciens",
-    reparations: "/api/reparations"
+    reparations: "/api/reparations",
+    utilisateurs: "/api/utilisateurs"
 };
 
 const state = {
     clients: [],
     vehicules: [],
     mecaniciens: [],
-    reparations: []
+    reparations: [],
+    utilisateurs: []
 };
 
 const moneyFormat = new Intl.NumberFormat("fr-FR", {
@@ -115,6 +118,38 @@ const configs = {
             {name: "vehiculeId", label: "Véhicule", type: "select", required: true, options: () => state.vehicules.map((item) => [item.id, vehicleName(item.id)])},
             {name: "mecanicienId", label: "Mécanicien", type: "select", required: true, options: () => state.mecaniciens.map((item) => [item.id, fullName(item)])}
         ]
+    },
+    utilisateurs: {
+        eyebrow: "Sécurité",
+        singular: "utilisateur",
+        title: "Utilisateurs",
+        listTitle: "Liste des utilisateurs",
+        createTitle: "Ajouter un utilisateur",
+        columns: [
+            [(item) => fullName(item), "Nom complet"],
+            ["telephone", "Téléphone"],
+            ["username", "Identifiant"],
+            [(item) => roleLabel(item.role), "Profil"]
+        ],
+        fields: [
+            {name: "nom", label: "Nom", required: true},
+            {name: "prenom", label: "Prenom", required: true},
+            {name: "telephone", label: "Telephone", required: true},
+            {name: "username", label: "Identifiant", required: true},
+            {name: "password", label: "Mot de passe", type: "password", required: () => mode === "create", full: true},
+            {
+                name: "role",
+                label: "Profil",
+                type: "select",
+                required: true,
+                options: () => [
+                    ["ADMIN", "Administrateur plateforme"],
+                    ["ADMIN_GARAGE", "Administrateur garage"],
+                    ["MECANICIEN", "Mécanicien"],
+                    ["CLIENT", "Client"]
+                ]
+            }
+        ]
     }
 };
 
@@ -199,7 +234,7 @@ function renderForm(item) {
     document.getElementById("listView").hidden = true;
     document.getElementById("formView").hidden = false;
     document.getElementById("cancelLink").href = `/${resource}`;
-    document.getElementById("formFields").innerHTML = config.fields.map((field) => renderField(field, item)).join("");
+    document.getElementById("formFields").innerHTML = `${renderFormContext()}${config.fields.map((field) => renderField(field, item)).join("")}`;
 }
 
 function renderCell(column, item) {
@@ -210,7 +245,8 @@ function renderCell(column, item) {
 
 function renderField(field, item) {
     const value = item?.[field.name] ?? defaultValue(field);
-    const required = field.required ? "required" : "";
+    const isRequired = typeof field.required === "function" ? field.required() : field.required;
+    const required = isRequired ? "required" : "";
     const full = field.full || field.type === "textarea" ? " full" : "";
 
     if (field.type === "textarea") {
@@ -227,7 +263,8 @@ function renderField(field, item) {
             </div>
         `;
     }
-    return `<div class="form-field${full}"><label for="${field.name}">${field.label}</label><input id="${field.name}" name="${field.name}" type="${field.type || "text"}" value="${escapeHtml(value)}" ${required} ${field.step ? `step="${field.step}"` : ""}></div>`;
+    const placeholder = field.type === "password" && mode === "edit" ? "Laisser vide pour conserver le mot de passe actuel" : "";
+    return `<div class="form-field${full}"><label for="${field.name}">${field.label}</label><input id="${field.name}" name="${field.name}" type="${field.type || "text"}" value="${escapeHtml(value)}" ${required} ${field.step ? `step="${field.step}"` : ""} ${placeholder ? `placeholder="${escapeHtml(placeholder)}"` : ""}></div>`;
 }
 
 async function saveRecord(event) {
@@ -248,10 +285,14 @@ async function saveRecord(event) {
     });
 
     try {
-        await requestJson(mode === "edit" ? `${endpoints[resource]}/${editId}` : endpoints[resource], {
+        const saved = await requestJson(mode === "edit" ? `${endpoints[resource]}/${editId}` : endpoints[resource], {
             method: mode === "edit" ? "PUT" : "POST",
             body: JSON.stringify(payload)
         });
+        if (resource === "vehicules" && mode === "create" && saved?.id) {
+            renderVehicleNextStep(saved);
+            return;
+        }
         window.location.href = `/${resource}`;
     } catch (error) {
         const target = document.getElementById("formError");
@@ -345,11 +386,25 @@ function statusClass(status = "") {
     return "";
 }
 
+function roleLabel(role = "") {
+    const labels = {
+        ADMIN: "Administrateur plateforme",
+        ADMIN_GARAGE: "Administrateur garage",
+        MECANICIEN: "Mécanicien",
+        CLIENT: "Client"
+    };
+    return labels[role] || role || "-";
+}
+
 function formatDate(value) {
     return value ? new Intl.DateTimeFormat("fr-FR").format(new Date(`${value}T00:00:00`)) : "-";
 }
 
 function defaultValue(field) {
+    const queryValue = queryParams.get(field.name);
+    if (queryValue) {
+        return queryValue;
+    }
     if (field.type === "date") {
         return new Date().toISOString().slice(0, 10);
     }
@@ -357,6 +412,48 @@ function defaultValue(field) {
         return "planifiee";
     }
     return "";
+}
+
+function renderFormContext() {
+    if (resource !== "reparations" || mode !== "create") {
+        return "";
+    }
+    const vehicleId = queryParams.get("vehiculeId");
+    if (!vehicleId) {
+        return "";
+    }
+    return `
+        <div class="form-context full">
+            <i class="bi bi-car-front" aria-hidden="true"></i>
+            <div>
+                <strong>Réparation liée au véhicule</strong>
+                <span>${escapeHtml(vehicleName(vehicleId))}</span>
+            </div>
+        </div>
+    `;
+}
+
+function renderVehicleNextStep(vehicle) {
+    const vehicleLabel = `${vehicle.immatriculation || ""} ${vehicle.marque || ""} ${vehicle.modele || ""}`.trim();
+    setHeader("Parc automobile", "Véhicule enregistré");
+    document.getElementById("crudForm").innerHTML = `
+        <div class="next-step-card">
+            <span class="next-step-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+            <p class="eyebrow">Suite logique</p>
+            <h2>${escapeHtml(vehicleLabel || "Le véhicule")} a bien été ajouté.</h2>
+            <p>
+                Vous pouvez maintenant créer une réparation pour ce véhicule. Cette étape reste optionnelle,
+                mais elle permet d’enchaîner directement avec le dossier atelier.
+            </p>
+            <div class="next-step-actions">
+                <a class="primary-button button-link" href="/reparations/create?vehiculeId=${encodeURIComponent(vehicle.id)}">
+                    <i class="bi bi-tools" aria-hidden="true"></i>
+                    Créer la réparation
+                </a>
+                <a class="ghost-button button-link" href="/vehicules">Voir les véhicules</a>
+            </div>
+        </div>
+    `;
 }
 
 function showToast(message, type = "") {
