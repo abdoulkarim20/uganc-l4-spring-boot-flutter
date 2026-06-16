@@ -12,6 +12,8 @@ import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
 import gn.uganc.gestiongarage.business.vehicule.VehiculeRepository;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
+import gn.uganc.gestiongarage.exception.WorkflowException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +43,9 @@ public class ClientSpaceController {
     @GetMapping("/dashboard")
     public ClientDashboardDto dashboard(@AuthenticationPrincipal UserDetails userDetails) {
         Utilisateur utilisateur = utilisateurRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
         Client client = clientRepository.findByTelephone(utilisateur.getTelephone())
-                .orElseThrow(() -> new RuntimeException("Aucune fiche client liée à ce compte"));
+                .orElseThrow(() -> new WorkflowException("Aucune fiche client n'est liée à ce compte utilisateur."));
 
         List<Vehicule> vehicules = vehiculeRepository.findByClientId(client.getId());
         List<Reparation> reparations = reparationRepository.findByVehiculeClientId(client.getId());

@@ -6,6 +6,8 @@ import gn.uganc.gestiongarage.business.auth.dtos.LoginRequest;
 import gn.uganc.gestiongarage.business.auth.dtos.MeResponse;
 import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
+import gn.uganc.gestiongarage.exception.BusinessException;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import gn.uganc.gestiongarage.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,9 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -72,13 +72,13 @@ public class AuthController {
                                      @RequestBody ChangePasswordRequest request) {
         Utilisateur utilisateur = findUtilisateur(userDetails.getUsername());
         if (!passwordEncoder.matches(request.currentPassword(), utilisateur.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mot de passe actuel incorrect");
+            throw new BusinessException("Mot de passe actuel incorrect.");
         }
         if (!StringUtils.hasText(request.newPassword()) || request.newPassword().length() < 6) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nouveau mot de passe doit contenir au moins 6 caractères");
+            throw new BusinessException("Le nouveau mot de passe doit contenir au moins 6 caractères.");
         }
         if (!request.newPassword().equals(request.confirmPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La confirmation du mot de passe ne correspond pas");
+            throw new BusinessException("La confirmation du mot de passe ne correspond pas.");
         }
         utilisateur.setPassword(passwordEncoder.encode(request.newPassword()));
         utilisateur.setMustChangePassword(false);
@@ -92,6 +92,6 @@ public class AuthController {
 
     private Utilisateur findUtilisateur(String username) {
         return utilisateurRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
     }
 }

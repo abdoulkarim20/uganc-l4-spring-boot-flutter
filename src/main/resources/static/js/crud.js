@@ -308,7 +308,11 @@ function visibleFields(config) {
 }
 
 async function deleteRecord(id) {
-    if (!window.confirm("Supprimer cet élément ?")) {
+    const confirmed = await confirmAction({
+        title: "Supprimer cet élément ?",
+        message: "Cette action est définitive. Les données liées peuvent aussi être impactées."
+    });
+    if (!confirmed) {
         return;
     }
     try {
@@ -329,13 +333,79 @@ async function requestJson(url, options = {}) {
         }
     });
     if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || `Erreur HTTP ${response.status}`);
+        throw new Error(await extractErrorMessage(response));
     }
     if (response.status === 204) {
         return null;
     }
     return response.json();
+}
+
+async function extractErrorMessage(response) {
+    const text = await response.text();
+    if (!text) {
+        return `Erreur HTTP ${response.status}`;
+    }
+    try {
+        const payload = JSON.parse(text);
+        const parts = [];
+        if (payload.message) {
+            parts.push(payload.message);
+        }
+        if (payload.errors) {
+            if (typeof payload.errors === "string") {
+                parts.push(payload.errors);
+            } else if (Array.isArray(payload.errors)) {
+                parts.push(payload.errors.join(", "));
+            } else if (typeof payload.errors === "object") {
+                parts.push(Object.entries(payload.errors).map(([field, message]) => `${field}: ${message}`).join(" · "));
+            }
+        }
+        return parts.filter(Boolean).join(" — ") || `Erreur HTTP ${response.status}`;
+    } catch (error) {
+        return text;
+    }
+}
+
+function confirmAction({title, message}) {
+    const overlay = document.getElementById("confirmOverlay");
+    const titleTarget = document.getElementById("confirmTitle");
+    const messageTarget = document.getElementById("confirmMessage");
+    const okButton = overlay.querySelector("[data-confirm-ok]");
+    const cancelButton = overlay.querySelector("[data-confirm-cancel]");
+
+    titleTarget.textContent = title;
+    messageTarget.textContent = message;
+    overlay.hidden = false;
+    okButton.focus();
+
+    return new Promise((resolve) => {
+        const cleanup = (result) => {
+            overlay.hidden = true;
+            okButton.removeEventListener("click", onOk);
+            cancelButton.removeEventListener("click", onCancel);
+            overlay.removeEventListener("click", onOverlay);
+            document.removeEventListener("keydown", onKeydown);
+            resolve(result);
+        };
+        const onOk = () => cleanup(true);
+        const onCancel = () => cleanup(false);
+        const onOverlay = (event) => {
+            if (event.target === overlay) {
+                cleanup(false);
+            }
+        };
+        const onKeydown = (event) => {
+            if (event.key === "Escape") {
+                cleanup(false);
+            }
+        };
+
+        okButton.addEventListener("click", onOk);
+        cancelButton.addEventListener("click", onCancel);
+        overlay.addEventListener("click", onOverlay);
+        document.addEventListener("keydown", onKeydown);
+    });
 }
 
 function setHeader(eyebrow, title) {

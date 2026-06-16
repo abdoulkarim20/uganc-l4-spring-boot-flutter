@@ -5,6 +5,7 @@ import gn.uganc.gestiongarage.business.client.mappers.ClientMapper;
 import gn.uganc.gestiongarage.business.utilisateur.RoleUser;
 import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -69,7 +70,7 @@ public class ClientImpl implements IClient {
 
     private Client findClient(Long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client", id));
     }
 
     private void createClientUserIfMissing(Client client, String rawPassword) {

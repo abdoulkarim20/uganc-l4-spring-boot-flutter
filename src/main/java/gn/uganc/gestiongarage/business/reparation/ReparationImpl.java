@@ -6,6 +6,7 @@ import gn.uganc.gestiongarage.business.reparation.dtos.ReparationDto;
 import gn.uganc.gestiongarage.business.reparation.mappers.ReparationMapper;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
 import gn.uganc.gestiongarage.business.vehicule.VehiculeRepository;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,16 +70,16 @@ public class ReparationImpl implements IReparation {
 
     private Reparation findReparation(Long id) {
         return reparationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reparation introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Réparation", id));
     }
 
     private Vehicule findVehicule(Long id) {
         return vehiculeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicule introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
     }
 
     private Mecanicien findMecanicien(Long id) {
         return mecanicienRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mecanicien introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Mécanicien", id));
     }
 }

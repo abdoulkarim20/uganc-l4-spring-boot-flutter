@@ -22,8 +22,7 @@ form.addEventListener("submit", async (event) => {
         });
 
         if (!response.ok) {
-            const text = await response.text();
-            throw new Error(text || "Identifiants incorrects");
+            throw new Error(await extractLoginError(response));
         }
 
         const authResponse = await response.json();
@@ -50,6 +49,22 @@ form.addEventListener("submit", async (event) => {
         error.hidden = false;
     }
 });
+
+async function extractLoginError(response) {
+    const text = await response.text();
+    if (!text) {
+        return "Connexion impossible.";
+    }
+    try {
+        const payload = JSON.parse(text);
+        if (payload.message) {
+            return payload.message;
+        }
+        return "Connexion impossible.";
+    } catch (exception) {
+        return text;
+    }
+}
 
 async function validateExistingSession() {
     const token = getAuthToken();

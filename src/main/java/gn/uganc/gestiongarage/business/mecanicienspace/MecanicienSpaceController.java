@@ -11,6 +11,8 @@ import gn.uganc.gestiongarage.business.reparation.ReparationRepository;
 import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
+import gn.uganc.gestiongarage.exception.WorkflowException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +41,9 @@ public class MecanicienSpaceController {
     @GetMapping("/dashboard")
     public MecanicienDashboardDto dashboard(@AuthenticationPrincipal UserDetails userDetails) {
         Utilisateur utilisateur = utilisateurRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
         Mecanicien mecanicien = mecanicienRepository.findByTelephone(utilisateur.getTelephone())
-                .orElseThrow(() -> new RuntimeException("Aucune fiche mécanicien liée à ce compte"));
+                .orElseThrow(() -> new WorkflowException("Aucune fiche mécanicien n'est liée à ce compte utilisateur."));
 
         List<Reparation> reparations = reparationRepository.findByMecanicienId(mecanicien.getId());
         long enCours = reparations.stream().filter(this::isActive).count();

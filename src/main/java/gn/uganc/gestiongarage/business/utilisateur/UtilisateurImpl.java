@@ -2,8 +2,8 @@ package gn.uganc.gestiongarage.business.utilisateur;
 
 import gn.uganc.gestiongarage.business.utilisateur.dtos.UtilisateurDto;
 import gn.uganc.gestiongarage.business.utilisateur.mappers.UtilisateurMapper;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import gn.uganc.gestiongarage.exception.BusinessException;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,7 +72,7 @@ public class UtilisateurImpl implements IUtilisateur {
     public void delete(Long id) {
         Utilisateur utilisateur = findUtilisateur(id);
         if ("admin".equals(utilisateur.getUsername())) {
-            throw new RuntimeException(
+            throw new BusinessException(
                     "Impossible de supprimer l'utilisateur administrateur."
             );
         }
@@ -81,6 +81,6 @@ public class UtilisateurImpl implements IUtilisateur {
 
     private Utilisateur findUtilisateur(Long id) {
         return utilisateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur", id));
     }
 }

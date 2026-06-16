@@ -5,6 +5,7 @@ import gn.uganc.gestiongarage.business.mecanicien.mappers.MecanicienMapper;
 import gn.uganc.gestiongarage.business.utilisateur.RoleUser;
 import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -69,7 +70,7 @@ public class MecanicienImpl implements IMecanicien {
 
     private Mecanicien findMecanicien(Long id) {
         return mecanicienRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mecanicien introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Mécanicien", id));
     }
 
     private void createMecanicienUserIfMissing(Mecanicien mecanicien, String rawPassword) {

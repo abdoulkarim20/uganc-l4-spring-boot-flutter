@@ -206,9 +206,25 @@ function detailConfig(name, item) {
 async function requestJson(url) {
     const response = await authFetch(url);
     if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
+        throw new Error(await extractErrorMessage(response));
     }
     return response.json();
+}
+
+async function extractErrorMessage(response) {
+    const text = await response.text();
+    if (!text) {
+        return `Erreur HTTP ${response.status}`;
+    }
+    try {
+        const payload = JSON.parse(text);
+        if (payload.message) {
+            return payload.message;
+        }
+    } catch (error) {
+        return text;
+    }
+    return text;
 }
 
 function clientName(id) {

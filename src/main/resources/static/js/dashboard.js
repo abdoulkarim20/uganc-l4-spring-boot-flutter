@@ -49,9 +49,22 @@ async function loadDashboard() {
 async function fetchCollection(url) {
     const response = await authFetch(url);
     if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
+        throw new Error(await extractErrorMessage(response));
     }
     return response.json();
+}
+
+async function extractErrorMessage(response) {
+    const text = await response.text();
+    if (!text) {
+        return `Erreur HTTP ${response.status}`;
+    }
+    try {
+        const payload = JSON.parse(text);
+        return payload.message || text;
+    } catch (error) {
+        return text;
+    }
 }
 
 function renderDashboard() {

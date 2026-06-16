@@ -4,6 +4,7 @@ import gn.uganc.gestiongarage.business.client.Client;
 import gn.uganc.gestiongarage.business.client.ClientRepository;
 import gn.uganc.gestiongarage.business.vehicule.dtos.VehiculeDto;
 import gn.uganc.gestiongarage.business.vehicule.mappers.VehiculeMapper;
+import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,11 +63,11 @@ public class VehiculeImpl implements IVehicule {
 
     private Vehicule findVehicule(Long id) {
         return vehiculeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicule introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
     }
 
     private Client findClient(Long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client introuvable avec l'id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client", id));
     }
 }
