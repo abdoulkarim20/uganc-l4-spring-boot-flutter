@@ -1804,6 +1804,103 @@ td {
     font-size: 20px;
 }
 
+.contact-section {
+    padding-top: 0;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+.contact-panel,
+.map-panel {
+    overflow: hidden;
+}
+
+.contact-panel {
+    padding: 24px;
+    display: grid;
+    gap: 22px;
+}
+
+.contact-copy p {
+    max-width: 620px;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.contact-points {
+    margin-top: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+.contact-points div {
+    min-height: 54px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface-soft);
+    font-weight: 700;
+}
+
+.contact-points .bi {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: #1d2940;
+}
+
+.contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.contact-form .form-field.full {
+    grid-column: 1 / -1;
+}
+
+.contact-form .primary-button {
+    width: fit-content;
+    min-width: 180px;
+}
+
+.contact-form .primary-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+    box-shadow: none;
+    transform: none;
+}
+
+.map-panel {
+    padding: 12px;
+}
+
+.map-frame {
+    min-height: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #dbe4f1;
+}
+
+.map-frame iframe {
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
 .landing-cta {
     width: min(1180px, calc(100% - 28px));
     margin: 26px auto 72px;
@@ -2096,6 +2193,23 @@ body.menu-open .sidebar {
         align-items: stretch;
         flex-direction: column;
         margin-bottom: 44px;
+    }
+
+    .contact-grid,
+    .contact-form {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-panel {
+        padding: 20px;
+    }
+
+    .contact-form .primary-button {
+        width: 100%;
+    }
+
+    .map-panel {
+        min-height: 360px;
     }
 
     .assistance-highlight {

@@ -22,6 +22,7 @@
         <a href="#solution">Solution</a>
         <a href="#modules">Modules</a>
         <a href="#vision">Vision</a>
+        <a href="#contact">Contact</a>
         <a class="landing-login button-link" href="/login">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             Connexion
@@ -203,6 +204,66 @@
         </div>
     </section>
 
+    <section class="landing-section contact-section" id="contact">
+        <div class="section-heading">
+            <p class="eyebrow">Contact</p>
+            <h2>Parlons de votre atelier et de vos besoins GARAGIX.</h2>
+        </div>
+        <div class="contact-grid">
+            <article class="panel page-card contact-panel">
+                <div class="contact-copy">
+                    <p>
+                        Besoin d'une démonstration, d'un accompagnement ou d'un échange rapide ?
+                        L'équipe GARAGIX est disponible pour vous répondre.
+                    </p>
+                    <div class="contact-points">
+                        <div>
+                            <i class="bi bi-telephone"></i>
+                            <span>+224610781799</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-envelope"></i>
+                            <span>contact@garagix.com</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-geo-alt"></i>
+                            <span>G8H6+X3H, Conakry, Guinea</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-field">
+                        <label for="contactName">Nom complet</label>
+                        <input id="contactName" name="contactName" type="text" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="contactPhone">Téléphone</label>
+                        <input id="contactPhone" name="contactPhone" type="text" placeholder="+224" required>
+                    </div>
+                    <div class="form-field full">
+                        <label for="contactEmail">Email</label>
+                        <input id="contactEmail" name="contactEmail" type="email" placeholder="vous@entreprise.com" required>
+                    </div>
+                    <div class="form-field full">
+                        <label for="contactMessage">Message</label>
+                        <textarea id="contactMessage" name="contactMessage" placeholder="Expliquez-nous votre besoin" required></textarea>
+                    </div>
+                    <button class="primary-button" type="submit">Nous contacter</button>
+                </form>
+            </article>
+
+            <article class="panel page-card map-panel">
+                <div class="map-frame">
+                    <iframe
+                        title="Localisation GARAGIX"
+                        src="https://maps.google.com/maps?q=G8H6%2BX3H%2C%20Conakry%2C%20Guinea&z=15&output=embed"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </article>
+        </div>
+    </section>
+
     <section class="landing-cta">
         <div>
             <p class="eyebrow">Espace professionnel</p>
@@ -211,9 +272,12 @@
         <a class="primary-button button-link" href="/login">Connexion</a>
     </section>
 </main>
+<div class="toast" id="landingToast" hidden></div>
 <script>
     const landingToggle = document.querySelector(".landing-menu-toggle");
     const landingMenu = document.querySelector(".landing-links");
+    const contactForm = document.getElementById("contactForm");
+    const contactButton = contactForm?.querySelector('button[type="submit"]');
     const sectionLinks = [...document.querySelectorAll('.landing-links a[href^="#"]')];
     const landingSections = sectionLinks
         .map((link) => document.querySelector(link.getAttribute("href")))
@@ -259,6 +323,43 @@
         });
 
         landingSections.forEach((section) => sectionObserver.observe(section));
+    }
+
+    contactForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const initialLabel = contactButton?.textContent || "Nous contacter";
+
+        if (contactButton) {
+            contactButton.disabled = true;
+            contactButton.textContent = "Envoi...";
+        }
+
+        try {
+            await new Promise((resolve) => window.setTimeout(resolve, 650));
+            showLandingToast(
+                "Votre message a bien ete envoye. Pour une reponse tres rapide, vous pouvez aussi appeler le +224610781799.",
+                "success"
+            );
+            contactForm.reset();
+        } catch (error) {
+            showLandingToast(error.message || "Impossible d'envoyer votre message.", "error");
+        } finally {
+            if (contactButton) {
+                contactButton.disabled = false;
+                contactButton.textContent = initialLabel;
+            }
+        }
+    });
+
+    function showLandingToast(message, type = "") {
+        const toast = document.getElementById("landingToast");
+        toast.textContent = message;
+        toast.className = `toast ${type}`.trim();
+        toast.hidden = false;
+        window.clearTimeout(window.__landingToastTimer);
+        window.__landingToastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+        }, 3200);
     }
 </script>
 </body>
