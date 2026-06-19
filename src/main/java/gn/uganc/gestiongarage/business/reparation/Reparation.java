@@ -1,6 +1,7 @@
 package gn.uganc.gestiongarage.business.reparation;
 
-import gn.uganc.gestiongarage.business.mecanicien.Mecanicien;
+import gn.uganc.gestiongarage.business.garage.Garage;
+import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
 import jakarta.persistence.*;
 
@@ -27,7 +28,12 @@ public class Reparation {
     private Vehicule vehicule;
 
     @ManyToOne(optional = false)
-    private Mecanicien mecanicien;
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "mecanicien_utilisateur_id")
+    private Utilisateur mecanicienUtilisateur;
 
     public Long getId() {
         return id;
@@ -77,11 +83,19 @@ public class Reparation {
         this.vehicule = vehicule;
     }
 
-    public Mecanicien getMecanicien() {
-        return mecanicien;
+    public Garage getGarage() {
+        return garage;
     }
 
-    public void setMecanicien(Mecanicien mecanicien) {
-        this.mecanicien = mecanicien;
+    public void setGarage(Garage garage) {
+        this.garage = garage;
+    }
+
+    public Utilisateur getMecanicienUtilisateur() {
+        return mecanicienUtilisateur;
+    }
+
+    public void setMecanicienUtilisateur(Utilisateur mecanicienUtilisateur) {
+        this.mecanicienUtilisateur = mecanicienUtilisateur;
     }
 }

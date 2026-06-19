@@ -5,6 +5,7 @@ const editId = mode === "edit" ? Number(pathParts[1]) : null;
 const queryParams = new URLSearchParams(window.location.search);
 
 const endpoints = {
+    garages: "/api/garages",
     clients: "/api/clients",
     vehicules: "/api/vehicules",
     mecaniciens: "/api/mecaniciens",
@@ -13,6 +14,7 @@ const endpoints = {
 };
 
 const state = {
+    garages: [],
     clients: [],
     vehicules: [],
     mecaniciens: [],
@@ -33,6 +35,40 @@ if (!requireAdminSession()) {
 wireLogoutLinks();
 
 const configs = {
+    garages: {
+        eyebrow: "Structures",
+        singular: "garage",
+        title: "Garages",
+        listTitle: "Liste des garages",
+        createTitle: "Ajouter un garage",
+        columns: [
+            ["nom", "Nom"],
+            ["telephone", "Telephone"],
+            ["ville", "Ville"],
+            [(item) => garageStatusLabel(item.statut), "Statut"]
+        ],
+        fields: [
+            {name: "nom", label: "Nom du garage", required: true},
+            {name: "telephone", label: "Telephone", required: true},
+            {name: "email", label: "Email", type: "email"},
+            {name: "adresse", label: "Adresse"},
+            {name: "ville", label: "Ville"},
+            {name: "quartier", label: "Quartier"},
+            {name: "pays", label: "Pays"},
+            {name: "nomResponsable", label: "Nom du responsable"},
+            {name: "telephoneResponsable", label: "Telephone du responsable"},
+            {name: "latitude", label: "Latitude", type: "number", step: "0.000001"},
+            {name: "longitude", label: "Longitude", type: "number", step: "0.000001"},
+            {
+                name: "statut",
+                label: "Statut",
+                type: "select",
+                required: true,
+                options: () => [["EN_ATTENTE", "En attente"], ["ACTIF", "Actif"], ["INACTIF", "Inactif"]]
+            },
+            {name: "description", label: "Description", type: "textarea", full: true}
+        ]
+    },
     clients: {
         eyebrow: "Relation client",
         singular: "client",
@@ -83,6 +119,7 @@ const configs = {
             [(item) => fullName(item), "Nom complet"],
             ["telephone", "Téléphone"],
             ["specialite", "Spécialité"],
+            [(item) => item.garageNom || "-", "Garage"],
             [(item) => countRepairsByMechanic(item.id), "Dossiers"]
         ],
         fields: [
@@ -90,6 +127,7 @@ const configs = {
             {name: "prenom", label: "Prenom", required: true},
             {name: "telephone", label: "Telephone", required: true},
             {name: "specialite", label: "Specialite", required: true},
+            {name: "garageId", label: "Garage", type: "select", required: true, options: () => state.garages.map((item) => [item.id, item.nom])},
             {name: "password", label: "Mot de passe du compte mécanicien", type: "password", required: () => mode === "create", full: true, visible: () => mode === "create"}
         ]
     },
@@ -131,12 +169,15 @@ const configs = {
             [(item) => fullName(item), "Nom complet"],
             ["telephone", "Téléphone"],
             ["username", "Identifiant"],
+            [(item) => item.garageNom || "-", "Garage"],
             [(item) => roleLabel(item.role), "Profil"]
         ],
         fields: [
             {name: "nom", label: "Nom", required: true},
             {name: "prenom", label: "Prenom", required: true},
             {name: "telephone", label: "Telephone", required: true},
+            {name: "email", label: "Email", type: "email"},
+            {name: "adresse", label: "Adresse"},
             {name: "username", label: "Identifiant", required: true},
             {name: "password", label: "Mot de passe", type: "password", required: () => mode === "create", full: true},
             {
@@ -150,6 +191,13 @@ const configs = {
                     ["MECANICIEN", "Mécanicien"],
                     ["CLIENT", "Client"]
                 ]
+            },
+            {
+                name: "garageId",
+                label: "Garage",
+                type: "select",
+                full: true,
+                options: () => [["", "Aucun garage"], ...state.garages.map((item) => [item.id, item.nom])]
             }
         ]
     }
@@ -184,7 +232,10 @@ async function loadPage() {
 }
 
 async function loadCollections() {
-    const entries = await Promise.allSettled(Object.entries(endpoints).map(async ([name, url]) => [name, await requestJson(url)]));
+    const entries = await Promise.allSettled(Object.entries(endpoints).map(async ([name, url]) => [
+        name,
+        await requestJson(url, {suppressForbiddenRedirect: name !== resource})
+    ]));
     entries.forEach((entry) => {
         if (entry.status === "fulfilled") {
             const [name, data] = entry.value;
@@ -280,8 +331,8 @@ async function saveRecord(event) {
         if (field.type === "number") {
             value = value === "" ? null : Number(value);
         }
-        if (field.name.endsWith("Id") && value !== "") {
-            value = Number(value);
+        if (field.name.endsWith("Id")) {
+            value = value === "" ? null : Number(value);
         }
         payload[field.name] = value;
     });
@@ -470,6 +521,15 @@ function roleLabel(role = "") {
         CLIENT: "Client"
     };
     return labels[role] || role || "-";
+}
+
+function garageStatusLabel(statut = "") {
+    const labels = {
+        EN_ATTENTE: "En attente",
+        ACTIF: "Actif",
+        INACTIF: "Inactif"
+    };
+    return labels[statut] || statut || "-";
 }
 
 function formatDate(value) {

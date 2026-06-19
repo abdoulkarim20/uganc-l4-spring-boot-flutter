@@ -5,6 +5,7 @@ import gn.uganc.gestiongarage.security.PasswordChangeRequiredFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,11 +31,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/client-space/**").hasAnyRole("CLIENT", "ADMIN")
                         .requestMatchers("/api/mecanicien-space/**").hasAnyRole("MECANICIEN", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/garages/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
+                        .requestMatchers("/api/garages/**").hasRole("ADMIN")
                         .requestMatchers("/api/utilisateurs/**").hasRole("ADMIN")
-                        .requestMatchers("/api/clients/**").hasRole("ADMIN")
-                        .requestMatchers("/api/vehicules/**").hasRole("ADMIN")
-                        .requestMatchers("/api/mecaniciens/**").hasRole("ADMIN")
-                        .requestMatchers("/api/reparations/**").hasRole("ADMIN")
+                        .requestMatchers("/api/clients/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
+                        .requestMatchers("/api/vehicules/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
+                        .requestMatchers("/api/mecaniciens/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
+                        .requestMatchers("/api/reparations/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic.disable())
@@ -57,7 +60,7 @@ public class SecurityConfig {
                                 "/mecanicien-dashboard.html",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/dashboard", "/clients/**", "/vehicules/**", "/mecaniciens/**", "/reparations/**",
+                        .requestMatchers("/dashboard", "/garages/**", "/clients/**", "/vehicules/**", "/mecaniciens/**", "/reparations/**",
                                 "/utilisateurs/**", "/client/**", "/mecanicien/**").permitAll()
                         .anyRequest().authenticated()
                 )

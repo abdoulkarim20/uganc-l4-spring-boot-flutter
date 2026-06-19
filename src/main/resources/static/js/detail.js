@@ -3,6 +3,7 @@ const resource = pathParts[0] || "clients";
 const itemId = Number(pathParts[1]);
 
 const endpoints = {
+    garages: "/api/garages",
     clients: "/api/clients",
     vehicules: "/api/vehicules",
     mecaniciens: "/api/mecaniciens",
@@ -11,6 +12,7 @@ const endpoints = {
 };
 
 const state = {
+    garages: [],
     clients: [],
     vehicules: [],
     mecaniciens: [],
@@ -46,7 +48,10 @@ async function loadDetail() {
 }
 
 async function loadCollections() {
-    const entries = await Promise.allSettled(Object.entries(endpoints).map(async ([name, url]) => [name, await requestJson(url)]));
+    const entries = await Promise.allSettled(Object.entries(endpoints).map(async ([name, url]) => [
+        name,
+        await requestJson(url, {suppressForbiddenRedirect: name !== resource})
+    ]));
     entries.forEach((entry) => {
         if (entry.status === "fulfilled") {
             const [name, data] = entry.value;
@@ -131,6 +136,26 @@ function renderRelatedTable(title, eyebrow, headers, rows, mapper, htmlColumns =
 }
 
 function detailConfig(name, item) {
+    if (name === "garages") {
+        return {
+            eyebrow: "Structures",
+            title: item.nom || "Garage",
+            detailTitle: "Fiche garage",
+            fields: [
+                ["Nom", item.nom],
+                ["Telephone", item.telephone],
+                ["Email", item.email],
+                ["Adresse", item.adresse],
+                ["Ville", item.ville],
+                ["Quartier", item.quartier],
+                ["Pays", item.pays],
+                ["Responsable", item.nomResponsable],
+                ["Telephone responsable", item.telephoneResponsable],
+                ["Statut", garageStatusLabel(item.statut)],
+                ["Description", item.description]
+            ]
+        };
+    }
     if (name === "clients") {
         return {
             eyebrow: "Relation client",
@@ -183,6 +208,7 @@ function detailConfig(name, item) {
                 ["Prénom", item.prenom],
                 ["Téléphone", item.telephone],
                 ["Identifiant", item.username],
+                ["Garage", item.garageNom],
                 ["Profil", roleLabel(item.role)]
             ]
         };
@@ -203,8 +229,8 @@ function detailConfig(name, item) {
     };
 }
 
-async function requestJson(url) {
-    const response = await authFetch(url);
+async function requestJson(url, options = {}) {
+    const response = await authFetch(url, options);
     if (!response.ok) {
         throw new Error(await extractErrorMessage(response));
     }
@@ -305,6 +331,15 @@ function formatDate(value) {
 
 function setText(id, value) {
     document.getElementById(id).textContent = value;
+}
+
+function garageStatusLabel(statut = "") {
+    const labels = {
+        EN_ATTENTE: "En attente",
+        ACTIF: "Actif",
+        INACTIF: "Inactif"
+    };
+    return labels[statut] || statut || "-";
 }
 
 function escapeHtml(value) {

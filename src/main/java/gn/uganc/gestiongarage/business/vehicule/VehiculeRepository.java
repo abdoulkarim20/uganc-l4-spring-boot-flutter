@@ -6,5 +6,9 @@ import java.util.List;
 
 public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
 
-    List<Vehicule> findByClientId(Long clientId);
+    List<Vehicule> findByProprietaireId(Long proprietaireId);
+
+    List<Vehicule> findDistinctByReparationsGarageId(Long garageId);
+
+    boolean existsByProprietaireId(Long proprietaireId);
 }

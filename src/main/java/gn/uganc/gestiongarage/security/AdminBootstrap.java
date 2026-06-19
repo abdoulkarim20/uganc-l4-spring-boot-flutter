@@ -33,7 +33,6 @@ public class AdminBootstrap implements CommandLineRunner {
         if (!enabled || utilisateurRepository.count() > 0 || utilisateurRepository.existsByUsername(username)) {
             return;
         }
-
         Utilisateur admin = new Utilisateur();
         admin.setNom("Administrateur");
         admin.setPrenom("Garage");

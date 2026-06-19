@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface ReparationRepository extends JpaRepository<Reparation, Long> {
 
-    List<Reparation> findByVehiculeClientId(Long clientId);
+    List<Reparation> findByVehiculeProprietaireId(Long proprietaireId);
 
-    List<Reparation> findByMecanicienId(Long mecanicienId);
+    List<Reparation> findByMecanicienUtilisateurId(Long mecanicienId);
+
+    List<Reparation> findByGarageId(Long garageId);
+
+    boolean existsByMecanicienUtilisateurId(Long mecanicienId);
 }

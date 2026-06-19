@@ -1,8 +1,9 @@
 package gn.uganc.gestiongarage.business.reparation.mappers;
 
-import gn.uganc.gestiongarage.business.mecanicien.Mecanicien;
+import gn.uganc.gestiongarage.business.garage.Garage;
 import gn.uganc.gestiongarage.business.reparation.Reparation;
 import gn.uganc.gestiongarage.business.reparation.dtos.ReparationDto;
+import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,15 @@ public class ReparationMapper {
         reparationDto.setCout(reparation.getCout());
         reparationDto.setStatut(reparation.getStatut());
         reparationDto.setVehiculeId(reparation.getVehicule() != null ? reparation.getVehicule().getId() : null);
-        reparationDto.setMecanicienId(reparation.getMecanicien() != null ? reparation.getMecanicien().getId() : null);
+        reparationDto.setMecanicienId(reparation.getMecanicienUtilisateur() != null ? reparation.getMecanicienUtilisateur().getId() : null);
+        if (reparation.getGarage() != null) {
+            reparationDto.setGarageId(reparation.getGarage().getId());
+            reparationDto.setGarageNom(reparation.getGarage().getNom());
+        }
         return reparationDto;
     }
 
-    public Reparation toEntity(ReparationDto reparationDto, Vehicule vehicule, Mecanicien mecanicien) {
+    public Reparation toEntity(ReparationDto reparationDto, Vehicule vehicule, Utilisateur mecanicien, Garage garage) {
         Reparation reparation = new Reparation();
         reparation.setId(reparationDto.getId());
         reparation.setDateReparation(reparationDto.getDateReparation());
@@ -29,7 +34,8 @@ public class ReparationMapper {
         reparation.setCout(reparationDto.getCout());
         reparation.setStatut(reparationDto.getStatut());
         reparation.setVehicule(vehicule);
-        reparation.setMecanicien(mecanicien);
+        reparation.setMecanicienUtilisateur(mecanicien);
+        reparation.setGarage(garage);
         return reparation;
     }
 }

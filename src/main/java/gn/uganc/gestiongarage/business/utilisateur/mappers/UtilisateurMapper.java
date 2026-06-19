@@ -16,6 +16,14 @@ public class UtilisateurMapper {
         utilisateurDto.setUsername(utilisateur.getUsername());
         utilisateurDto.setRole(utilisateur.getRole());
         utilisateurDto.setMustChangePassword(utilisateur.isMustChangePassword());
+        utilisateurDto.setEmail(utilisateur.getEmail());
+        utilisateurDto.setAdresse(utilisateur.getAdresse());
+        utilisateurDto.setSpecialite(utilisateur.getSpecialite());
+        utilisateurDto.setDateCreation(utilisateur.getDateCreation());
+        if (utilisateur.getGarage() != null) {
+            utilisateurDto.setGarageId(utilisateur.getGarage().getId());
+            utilisateurDto.setGarageNom(utilisateur.getGarage().getNom());
+        }
         return utilisateurDto;
     }
 
@@ -29,6 +37,10 @@ public class UtilisateurMapper {
         utilisateur.setPassword(utilisateurDto.getPassword());
         utilisateur.setRole(utilisateurDto.getRole());
         utilisateur.setMustChangePassword(utilisateurDto.isMustChangePassword());
+        utilisateur.setEmail(utilisateurDto.getEmail());
+        utilisateur.setAdresse(utilisateurDto.getAdresse());
+        utilisateur.setSpecialite(utilisateurDto.getSpecialite());
+        utilisateur.setDateCreation(utilisateurDto.getDateCreation());
         return utilisateur;
     }
 }

@@ -1,6 +1,9 @@
 package gn.uganc.gestiongarage.business.utilisateur;
 
+import gn.uganc.gestiongarage.business.garage.Garage;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "utilisateurs")
@@ -24,6 +27,23 @@ public class Utilisateur {
     private RoleUser role;
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean mustChangePassword = false;
+    @Column(length = 120)
+    private String email;
+    @Column(length = 180)
+    private String adresse;
+    @Column(length = 100)
+    private String specialite;
+    private LocalDateTime dateCreation;
+    @ManyToOne
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
+
+    @PrePersist
+    void prePersist() {
+        if (dateCreation == null) {
+            dateCreation = LocalDateTime.now();
+        }
+    }
 
     public Long getId() {
         return id;
@@ -87,5 +107,45 @@ public class Utilisateur {
 
     public void setMustChangePassword(boolean mustChangePassword) {
         this.mustChangePassword = mustChangePassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getSpecialite() {
+        return specialite;
+    }
+
+    public void setSpecialite(String specialite) {
+        this.specialite = specialite;
+    }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(LocalDateTime dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public Garage getGarage() {
+        return garage;
+    }
+
+    public void setGarage(Garage garage) {
+        this.garage = garage;
     }
 }

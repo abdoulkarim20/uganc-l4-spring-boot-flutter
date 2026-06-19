@@ -1,7 +1,7 @@
 package gn.uganc.gestiongarage.business.vehicule;
 
-import gn.uganc.gestiongarage.business.client.Client;
 import gn.uganc.gestiongarage.business.reparation.Reparation;
+import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,7 +23,8 @@ public class Vehicule {
     private Integer annee;
 
     @ManyToOne(optional = false)
-    private Client client;
+    @JoinColumn(name = "proprietaire_id")
+    private Utilisateur proprietaire;
 
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reparation> reparations = new ArrayList<>();
@@ -68,12 +69,12 @@ public class Vehicule {
         this.annee = annee;
     }
 
-    public Client getClient() {
-        return client;
+    public Utilisateur getProprietaire() {
+        return proprietaire;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setProprietaire(Utilisateur proprietaire) {
+        this.proprietaire = proprietaire;
     }
 
     public List<Reparation> getReparations() {

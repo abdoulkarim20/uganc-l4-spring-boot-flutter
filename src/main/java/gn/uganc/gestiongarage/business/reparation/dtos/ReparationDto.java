@@ -12,6 +12,8 @@ public class ReparationDto {
     private String statut;
     private Long vehiculeId;
     private Long mecanicienId;
+    private Long garageId;
+    private String garageNom;
 
     public Long getId() {
         return id;
@@ -67,5 +69,21 @@ public class ReparationDto {
 
     public void setMecanicienId(Long mecanicienId) {
         this.mecanicienId = mecanicienId;
+    }
+
+    public Long getGarageId() {
+        return garageId;
+    }
+
+    public void setGarageId(Long garageId) {
+        this.garageId = garageId;
+    }
+
+    public String getGarageNom() {
+        return garageNom;
+    }
+
+    public void setGarageNom(String garageNom) {
+        this.garageNom = garageNom;
     }
 }

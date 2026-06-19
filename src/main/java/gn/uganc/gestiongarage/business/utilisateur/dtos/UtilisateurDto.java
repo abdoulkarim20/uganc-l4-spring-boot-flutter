@@ -2,6 +2,8 @@ package gn.uganc.gestiongarage.business.utilisateur.dtos;
 
 import gn.uganc.gestiongarage.business.utilisateur.RoleUser;
 
+import java.time.LocalDateTime;
+
 public class UtilisateurDto {
 
     private Long id;
@@ -12,6 +14,12 @@ public class UtilisateurDto {
     private String password;
     private RoleUser role;
     private boolean mustChangePassword;
+    private String email;
+    private String adresse;
+    private String specialite;
+    private Long garageId;
+    private String garageNom;
+    private LocalDateTime dateCreation;
 
     public Long getId() {
         return id;
@@ -75,5 +83,53 @@ public class UtilisateurDto {
 
     public void setMustChangePassword(boolean mustChangePassword) {
         this.mustChangePassword = mustChangePassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getSpecialite() {
+        return specialite;
+    }
+
+    public void setSpecialite(String specialite) {
+        this.specialite = specialite;
+    }
+
+    public Long getGarageId() {
+        return garageId;
+    }
+
+    public void setGarageId(Long garageId) {
+        this.garageId = garageId;
+    }
+
+    public String getGarageNom() {
+        return garageNom;
+    }
+
+    public void setGarageNom(String garageNom) {
+        this.garageNom = garageNom;
+    }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(LocalDateTime dateCreation) {
+        this.dateCreation = dateCreation;
     }
 }

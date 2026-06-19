@@ -8,6 +8,8 @@ public class MecanicienDto {
     private String telephone;
     private String specialite;
     private String password;
+    private Long garageId;
+    private String garageNom;
 
     public Long getId() {
         return id;
@@ -55,5 +57,21 @@ public class MecanicienDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getGarageId() {
+        return garageId;
+    }
+
+    public void setGarageId(Long garageId) {
+        this.garageId = garageId;
+    }
+
+    public String getGarageNom() {
+        return garageNom;
+    }
+
+    public void setGarageNom(String garageNom) {
+        this.garageNom = garageNom;
     }
 }

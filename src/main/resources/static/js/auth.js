@@ -22,10 +22,22 @@ function clearAuthSession() {
 function isAdminSession() {
     try {
         const user = getAuthUser();
-        return Array.isArray(user.roles) && user.roles.includes("ROLE_ADMIN");
+        return Array.isArray(user.roles) && (
+            user.roles.includes("ROLE_ADMIN") || user.roles.includes("ROLE_ADMIN_GARAGE")
+        );
     } catch (error) {
         return false;
     }
+}
+
+function isPlatformAdminSession() {
+    const user = getAuthUser();
+    return Array.isArray(user.roles) && user.roles.includes("ROLE_ADMIN");
+}
+
+function isGarageAdminSession() {
+    const user = getAuthUser();
+    return Array.isArray(user.roles) && user.roles.includes("ROLE_ADMIN_GARAGE");
 }
 
 function isClientSession() {
@@ -121,14 +133,15 @@ function requireAdminSession() {
 }
 
 async function authFetch(url, options = {}) {
+    const {suppressForbiddenRedirect = false, ...fetchOptions} = options;
     const token = getAuthToken();
     const response = await fetch(url, {
-        ...options,
+        ...fetchOptions,
         headers: {
             "Accept": "application/json",
-            ...(options.body ? {"Content-Type": "application/json"} : {}),
+            ...(fetchOptions.body ? {"Content-Type": "application/json"} : {}),
             ...(token ? {"Authorization": `Bearer ${token}`} : {}),
-            ...(options.headers || {})
+            ...(fetchOptions.headers || {})
         }
     });
 
@@ -138,7 +151,7 @@ async function authFetch(url, options = {}) {
         throw new Error("Session expirée");
     }
 
-    if (response.status === 403) {
+    if (response.status === 403 && !suppressForbiddenRedirect) {
         window.location.href = "/403";
         throw new Error("Accès refusé");
     }
@@ -154,12 +167,26 @@ async function authFetch(url, options = {}) {
 
 function wireLogoutLinks() {
     renderAuthenticatedUser();
+    renderRoleNavigation();
     document.querySelectorAll("[data-logout]").forEach((link) => {
         link.addEventListener("click", (event) => {
             event.preventDefault();
             clearAuthSession();
             window.location.href = "/";
         });
+    });
+}
+
+function renderRoleNavigation() {
+    if (!isGarageAdminSession()) {
+        return;
+    }
+    const hiddenPaths = ["/garages", "/clients", "/vehicules", "/utilisateurs"];
+    document.querySelectorAll("a[href]").forEach((link) => {
+        const href = link.getAttribute("href") || "";
+        if (hiddenPaths.some((path) => href === path || href.startsWith(`${path}/`))) {
+            link.hidden = true;
+        }
     });
 }
 
