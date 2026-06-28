@@ -31,19 +31,7 @@ form.addEventListener("submit", async (event) => {
             window.location.href = "/change-password";
             return;
         }
-        if (isAdminSession()) {
-            window.location.href = "/dashboard";
-            return;
-        }
-        if (isClientSession()) {
-            window.location.href = "/client/dashboard";
-            return;
-        }
-        if (isMecanicienSession()) {
-            window.location.href = "/mecanicien/dashboard";
-            return;
-        }
-        window.location.href = "/403";
+        window.location.href = resolvePostLoginRedirect();
     } catch (exception) {
         error.textContent = exception.message;
         error.hidden = false;
@@ -101,20 +89,54 @@ async function validateExistingSession() {
             window.location.href = "/change-password";
             return;
         }
-        if (isAdminSession()) {
-            window.location.href = "/dashboard";
-            return;
-        }
-        if (isClientSession()) {
-            window.location.href = "/client/dashboard";
-            return;
-        }
-        if (isMecanicienSession()) {
-            window.location.href = "/mecanicien/dashboard";
-        }
+        window.location.href = resolvePostLoginRedirect();
     } catch (exception) {
         if (getAuthToken() === token) {
             clearAuthSession();
         }
     }
+}
+
+function resolvePostLoginRedirect() {
+    const requested = new URLSearchParams(window.location.search).get("redirect");
+    if (requested && isAllowedRedirectForSession(requested)) {
+        return requested;
+    }
+    if (isAdminSession()) {
+        return "/dashboard";
+    }
+    if (isClientSession()) {
+        return "/client/dashboard";
+    }
+    if (isMecanicienSession()) {
+        return "/mecanicien/dashboard";
+    }
+    return "/403";
+}
+
+function isAllowedRedirectForSession(target) {
+    if (!target.startsWith("/") || target.startsWith("//")) {
+        return false;
+    }
+    if (isPlatformAdminSession()) {
+        return target.startsWith("/dashboard")
+            || target.startsWith("/garages")
+            || target.startsWith("/clients")
+            || target.startsWith("/vehicules")
+            || target.startsWith("/mecaniciens")
+            || target.startsWith("/reparations")
+            || target.startsWith("/utilisateurs");
+    }
+    if (isGarageAdminSession()) {
+        return target.startsWith("/dashboard")
+            || target.startsWith("/mecaniciens")
+            || target.startsWith("/reparations");
+    }
+    if (isClientSession()) {
+        return target.startsWith("/client/dashboard");
+    }
+    if (isMecanicienSession()) {
+        return target.startsWith("/mecanicien/dashboard");
+    }
+    return false;
 }

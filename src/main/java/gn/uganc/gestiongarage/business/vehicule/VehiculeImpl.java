@@ -9,11 +9,15 @@ import gn.uganc.gestiongarage.exception.BusinessException;
 import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import gn.uganc.gestiongarage.security.CurrentUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 @Service
 public class VehiculeImpl implements IVehicule {
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final String CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
     private final VehiculeRepository vehiculeRepository;
     private final UtilisateurRepository utilisateurRepository;
@@ -30,8 +34,10 @@ public class VehiculeImpl implements IVehicule {
 
     @Override
     public VehiculeDto create(VehiculeDto vehiculeDto) {
+        ensureUniqueImmatriculation(vehiculeDto.getImmatriculation(), null);
         Utilisateur proprietaire = findClientUser(vehiculeDto.getClientId());
         Vehicule vehicule = vehiculeMapper.toEntity(vehiculeDto, proprietaire);
+        ensureAccessCode(vehicule);
         return vehiculeMapper.toDto(vehiculeRepository.save(vehicule));
     }
 
@@ -48,6 +54,14 @@ public class VehiculeImpl implements IVehicule {
     }
 
     @Override
+    public List<VehiculeDto> getByClientId(Long clientId) {
+        findClientUser(clientId);
+        return vehiculeRepository.findByProprietaireId(clientId).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
     public VehiculeDto getById(Long id) {
         return vehiculeMapper.toDto(findVehicule(id));
     }
@@ -55,11 +69,16 @@ public class VehiculeImpl implements IVehicule {
     @Override
     public VehiculeDto update(Long id, VehiculeDto vehiculeDto) {
         Vehicule vehicule = findVehicule(id);
+        ensureUniqueImmatriculation(vehiculeDto.getImmatriculation(), id);
         Utilisateur proprietaire = findClientUser(vehiculeDto.getClientId());
         vehicule.setImmatriculation(vehiculeDto.getImmatriculation());
         vehicule.setMarque(vehiculeDto.getMarque());
         vehicule.setModele(vehiculeDto.getModele());
         vehicule.setAnnee(vehiculeDto.getAnnee());
+        if (StringUtils.hasText(vehiculeDto.getCodeAcces())) {
+            vehicule.setCodeAcces(vehiculeDto.getCodeAcces().trim().toUpperCase());
+        }
+        ensureAccessCode(vehicule);
         vehicule.setProprietaire(proprietaire);
         return vehiculeMapper.toDto(vehiculeRepository.save(vehicule));
     }
@@ -91,5 +110,36 @@ public class VehiculeImpl implements IVehicule {
             throw new BusinessException("Le proprietaire du vehicule doit etre un client.");
         }
         return utilisateur;
+    }
+
+    private void ensureUniqueImmatriculation(String immatriculation, Long currentVehiculeId) {
+        if (!StringUtils.hasText(immatriculation)) {
+            return;
+        }
+        vehiculeRepository.findByImmatriculationIgnoreCase(immatriculation.trim())
+                .filter(vehicule -> currentVehiculeId == null || !vehicule.getId().equals(currentVehiculeId))
+                .ifPresent(vehicule -> {
+                    throw new BusinessException("Ce vehicule est deja enregistre.");
+                });
+    }
+
+    private void ensureAccessCode(Vehicule vehicule) {
+        if (StringUtils.hasText(vehicule.getCodeAcces())) {
+            vehicule.setCodeAcces(vehicule.getCodeAcces().trim().toUpperCase());
+            return;
+        }
+        String code;
+        do {
+            code = generateAccessCode();
+        } while (vehiculeRepository.existsByCodeAcces(code));
+        vehicule.setCodeAcces(code);
+    }
+
+    private String generateAccessCode() {
+        StringBuilder builder = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            builder.append(CODE_ALPHABET.charAt(RANDOM.nextInt(CODE_ALPHABET.length())));
+        }
+        return builder.toString();
     }
 }

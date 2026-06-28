@@ -6,9 +6,9 @@
     <title>GARAGIX | Gestion garage</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard.css?v=24">
 </head>
 <body class="landing-page">
 <header class="landing-nav">
@@ -23,6 +23,8 @@
         <a href="#modules">Modules</a>
         <a href="#vision">Vision</a>
         <a href="#contact">Contact</a>
+        <a href="/vehicle/health">Santé véhicule</a>
+        <a href="/client/access">Espace client</a>
         <a class="landing-login button-link" href="/login">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             Connexion
@@ -32,14 +34,30 @@
 
 <main>
     <section class="landing-hero">
+        <div class="hero-background-slider" aria-hidden="true">
+            <img class="hero-bg hero-bg-one" src="/images/landing-repair.png" alt="">
+            <img class="hero-bg hero-bg-two" src="/images/landing-assistance.png" alt="">
+            <img class="hero-bg hero-bg-three" src="/images/landing-parts.png" alt="">
+        </div>
         <div class="landing-copy">
             <span class="landing-pill"><i class="bi bi-shield-check"></i> Espace atelier sécurisé</span>
             <p class="eyebrow">Plateforme de gestion automobile</p>
-            <h1>Un espace moderne pour suivre vos clients, véhicules et interventions.</h1>
+            <h1>Gérez votre garage simplement.</h1>
             <p>
-                GARAGIX aide votre atelier à garder une vue simple et fiable sur les réparations,
-                les diagnostics et l’activité de vos mécaniciens, sans complexifier le quotidien.
+                Clients, véhicules, mécaniciens et réparations réunis dans un espace clair.
             </p>
+            <div class="hero-value-grid" aria-label="Valeur GARAGIX">
+                <article>
+                    <span><i class="bi bi-building-check" aria-hidden="true"></i></span>
+                    <strong>Garages</strong>
+                    <small>Piloter l'atelier, les équipes et les réparations.</small>
+                </article>
+                <article>
+                    <span><i class="bi bi-person-check" aria-hidden="true"></i></span>
+                    <strong>Clients</strong>
+                    <small>Suivre les véhicules, interventions et dépenses.</small>
+                </article>
+            </div>
             <div class="landing-actions">
                 <a class="primary-button button-link" href="/login">Accéder à l’application</a>
                 <a class="ghost-button button-link" href="#solution">Voir les capacités</a>
@@ -47,7 +65,8 @@
             <div class="trust-row" aria-label="Points forts">
                 <span><i class="bi bi-check2-circle"></i> Suivi atelier</span>
                 <span><i class="bi bi-check2-circle"></i> Données centralisées</span>
-                <span><i class="bi bi-check2-circle"></i> Interface responsive</span>
+                <span><i class="bi bi-check2-circle"></i> Accès multi-profils</span>
+                <span><i class="bi bi-check2-circle"></i> Garages vérifiés</span>
             </div>
         </div>
 
@@ -102,23 +121,23 @@
     <section class="landing-section solution-section" id="solution">
         <div class="section-heading">
             <p class="eyebrow">Solution</p>
-            <h2>Une organisation pensée pour le rythme réel d’un garage.</h2>
+            <h2>Un suivi clair, du client à la réparation.</h2>
         </div>
         <div class="process-grid">
             <article>
                 <span>01</span>
                 <h3>Enregistrer</h3>
-                <p>Ajoutez rapidement les clients, véhicules et informations utiles pour démarrer le suivi.</p>
+                <p>Créez les dossiers utiles en quelques clics.</p>
             </article>
             <article>
                 <span>02</span>
                 <h3>Affecter</h3>
-                <p>Associez chaque réparation à un véhicule et à un mécanicien disponible.</p>
+                <p>Affectez le bon mécanicien au bon véhicule.</p>
             </article>
             <article>
                 <span>03</span>
                 <h3>Suivre</h3>
-                <p>Consultez les statuts, montants et historiques depuis des écrans simples à scanner.</p>
+                <p>Suivez les statuts, montants et historiques.</p>
             </article>
         </div>
     </section>
@@ -126,7 +145,7 @@
     <section class="landing-section" id="modules">
         <div class="section-heading">
             <p class="eyebrow">Modules actuels</p>
-            <h2>Les opérations essentielles sont déjà couvertes.</h2>
+            <h2>Les essentiels du garage.</h2>
         </div>
         <div class="feature-grid">
             <article class="feature-card">
@@ -270,7 +289,10 @@
             <p class="eyebrow">Espace professionnel</p>
             <h2>Connectez-vous pour gérer votre activité garage.</h2>
         </div>
-        <a class="primary-button button-link" href="/login">Connexion</a>
+        <div class="landing-actions">
+            <a class="ghost-button button-link" href="/client/access">Espace client</a>
+            <a class="primary-button button-link" href="/login">Connexion</a>
+        </div>
     </section>
 </main>
 <footer class="landing-footer">
@@ -280,8 +302,7 @@
                 <img class="brand-logo landing-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
             </a>
             <p>
-                GARAGIX simplifie la gestion des clients, vehicules, mecaniciens et reparations
-                pour les ateliers modernes.
+                GARAGIX simplifie la gestion quotidienne des garages.
             </p>
         </div>
 
@@ -302,7 +323,7 @@
     </div>
 
     <div class="landing-footer-bottom">
-        <span>&copy; 2026 GARAGIX. Tous droits reserves.</span>
+        <span>&copy; 2026 GARAGIX. Tous droits réservés.</span>
         <!--<a href="/login">Acces plateforme</a>-->
     </div>
 </footer>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Créer mon compte | GARAGIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css?v=2">
+</head>
+<body class="login-page">
+<main class="login-shell client-register-shell compact-register-shell">
+    <section class="login-panel client-register-panel compact-register-panel">
+        <div class="brand login-brand">
+            <img class="brand-logo login-logo brand-logo-only" src="/images/garagix-logo.png" alt="GARAGIX">
+        </div>
+        <p class="eyebrow">Espace client</p>
+        <h1>Créer mon compte</h1>
+        <p class="register-intro">Votre numéro de téléphone servira d'identifiant.</p>
+
+        <form class="login-form client-register-form" id="clientRegisterForm" autocomplete="off">
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="nom">Nom</label>
+                    <input id="nom" name="nom" type="text" autocomplete="off" required>
+                </div>
+                <div class="form-field">
+                    <label for="prenom">Prénom</label>
+                    <input id="prenom" name="prenom" type="text" autocomplete="off" required>
+                </div>
+                <div class="form-field">
+                    <label for="telephone">Téléphone</label>
+                    <input id="telephone" name="telephone" type="text" autocomplete="off" required>
+                </div>
+                <div class="form-field">
+                    <label for="adresse">Adresse</label>
+                    <input id="adresse" name="adresse" type="text" autocomplete="off">
+                </div>
+                <div class="form-field">
+                    <label for="password">Mot de passe</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required>
+                </div>
+                <div class="form-field">
+                    <label for="confirmPassword">Confirmation</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+                </div>
+            </div>
+
+            <p class="form-error" data-register-error hidden></p>
+            <div class="register-actions">
+                <a class="ghost-button button-link" href="/client/access">Retour</a>
+                <button class="primary-button login-button" type="submit">Créer le compte</button>
+            </div>
+            <p class="register-login-link">
+                Déjà inscrit ? <a href="/login">Se connecter</a>.
+            </p>
+        </form>
+    </section>
+</main>
+<div class="toast" id="registerToast" hidden></div>
+<script src="/js/client-register.js?v=4"></script>
+</body>
+</html>

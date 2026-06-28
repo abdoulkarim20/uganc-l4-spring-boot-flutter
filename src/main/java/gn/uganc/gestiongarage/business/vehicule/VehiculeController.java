@@ -35,6 +35,11 @@ public class VehiculeController {
         return vehiculeService.getAll();
     }
 
+    @GetMapping("/client/{clientId}")
+    public List<VehiculeDto> getByClientId(@PathVariable Long clientId) {
+        return vehiculeService.getByClientId(clientId);
+    }
+
     @GetMapping("/{id}")
     public VehiculeDto getById(@PathVariable Long id) {
         return vehiculeService.getById(id);

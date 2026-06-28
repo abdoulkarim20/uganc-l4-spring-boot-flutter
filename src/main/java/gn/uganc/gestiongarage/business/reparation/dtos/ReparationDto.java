@@ -8,6 +8,7 @@ public class ReparationDto {
     private Long id;
     private LocalDate dateReparation;
     private String description;
+    private String consigneClient;
     private BigDecimal cout;
     private String statut;
     private Long vehiculeId;
@@ -37,6 +38,14 @@ public class ReparationDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getConsigneClient() {
+        return consigneClient;
+    }
+
+    public void setConsigneClient(String consigneClient) {
+        this.consigneClient = consigneClient;
     }
 
     public BigDecimal getCout() {

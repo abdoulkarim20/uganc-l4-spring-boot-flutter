@@ -10,6 +10,8 @@ public interface IVehicule {
 
     List<VehiculeDto> getAll();
 
+    List<VehiculeDto> getByClientId(Long clientId);
+
     VehiculeDto getById(Long id);
 
     VehiculeDto update(Long id, VehiculeDto vehiculeDto);

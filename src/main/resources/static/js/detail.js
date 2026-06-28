@@ -180,6 +180,7 @@ function detailConfig(name, item) {
                 ["Marque", item.marque],
                 ["Modèle", item.modele],
                 ["Année", item.annee],
+                ["Code santé", item.codeAcces],
                 ["Client", clientName(item.clientId)]
             ]
         };
@@ -221,10 +222,12 @@ function detailConfig(name, item) {
             ["Date", formatDate(item.dateReparation)],
             ["Client", repairClientLink(item), true],
             ["Véhicule", entityLink("vehicules", item.vehiculeId, vehicleName(item.vehiculeId)), true],
+            ["Code santé", repairVehicleHealthCode(item), true],
             ["Mécanicien", entityLink("mecaniciens", item.mecanicienId, mechanicName(item.mecanicienId)), true],
             ["Statut", statusBadge(item.statut), true],
             ["Montant", moneyFormat.format(Number(item.cout || 0))],
-            ["Description", item.description]
+            ["Description", item.description],
+            ["Consigne client", item.consigneClient]
         ]
     };
 }
@@ -272,6 +275,14 @@ function repairClientLink(repair) {
     const vehicle = findVehicle(repair.vehiculeId);
     const client = vehicle ? findClient(vehicle.clientId) : null;
     return client ? entityLink("clients", client.id, fullName(client)) : "-";
+}
+
+function repairVehicleHealthCode(repair) {
+    const vehicle = findVehicle(repair.vehiculeId);
+    if (!vehicle?.codeAcces) {
+        return "-";
+    }
+    return `<span class="health-code-inline">${escapeHtml(vehicle.codeAcces)}</span>`;
 }
 
 function entityLink(type, id, label) {

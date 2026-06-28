@@ -64,6 +64,16 @@ public class ClientImpl implements IClient {
     }
 
     @Override
+    public ClientDto getByTelephone(String telephone) {
+        Utilisateur utilisateur = utilisateurRepository.findByTelephone(telephone)
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable"));
+        if (utilisateur.getRole() != RoleUser.CLIENT) {
+            throw new ResourceNotFoundException("Client introuvable");
+        }
+        return toDto(utilisateur);
+    }
+
+    @Override
     public ClientDto update(Long id, ClientDto clientDto) {
         Utilisateur utilisateur = findClientUser(id);
         validateClient(clientDto, id);

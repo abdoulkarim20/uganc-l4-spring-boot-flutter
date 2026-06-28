@@ -10,6 +10,19 @@ const moneyFormatClient = new Intl.NumberFormat("fr-FR", {
     maximumFractionDigits: 0
 });
 
+document.getElementById("showVehicleForm")?.addEventListener("click", () => {
+    document.getElementById("clientVehicleForm").hidden = false;
+    document.getElementById("showVehicleForm").hidden = true;
+});
+
+document.getElementById("hideVehicleForm")?.addEventListener("click", () => {
+    document.getElementById("clientVehicleForm").reset();
+    document.getElementById("clientVehicleForm").hidden = true;
+    document.getElementById("showVehicleForm").hidden = false;
+});
+
+document.getElementById("clientVehicleForm")?.addEventListener("submit", saveClientVehicle);
+
 loadClientDashboard();
 
 async function loadClientDashboard() {
@@ -54,13 +67,41 @@ function renderClientDashboard(data) {
     `).join("") : `<tr><td class="empty" colspan="5">Aucune réparation trouvée.</td></tr>`;
 }
 
-async function requestClientJson(url) {
-    const response = await authFetch(url);
+async function requestClientJson(url, options = {}) {
+    const response = await authFetch(url, options);
     if (!response.ok) {
         const text = await response.text();
         throw new Error(text || `Erreur HTTP ${response.status}`);
     }
     return response.json();
+}
+
+async function saveClientVehicle(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const initialLabel = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Enregistrement...";
+
+    try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        payload.annee = payload.annee ? Number(payload.annee) : null;
+        await requestClientJson("/api/client-space/vehicules", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        showToast("Véhicule ajouté.", "success");
+        form.reset();
+        form.hidden = true;
+        document.getElementById("showVehicleForm").hidden = false;
+        await loadClientDashboard();
+    } catch (error) {
+        showToast(error.message, "error");
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = initialLabel;
+    }
 }
 
 function statusBadge(status) {

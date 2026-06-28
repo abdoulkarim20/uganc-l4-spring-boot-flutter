@@ -15,6 +15,7 @@ public class VehiculeMapper {
         vehiculeDto.setMarque(vehicule.getMarque());
         vehiculeDto.setModele(vehicule.getModele());
         vehiculeDto.setAnnee(vehicule.getAnnee());
+        vehiculeDto.setCodeAcces(vehicule.getCodeAcces());
         vehiculeDto.setClientId(vehicule.getProprietaire() != null ? vehicule.getProprietaire().getId() : null);
         return vehiculeDto;
     }
@@ -26,6 +27,7 @@ public class VehiculeMapper {
         vehicule.setMarque(vehiculeDto.getMarque());
         vehicule.setModele(vehiculeDto.getModele());
         vehicule.setAnnee(vehiculeDto.getAnnee());
+        vehicule.setCodeAcces(vehiculeDto.getCodeAcces());
         vehicule.setProprietaire(proprietaire);
         return vehicule;
     }

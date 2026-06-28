@@ -21,6 +21,8 @@ public class Vehicule {
     @Column(length = 60, nullable = false)
     private String modele;
     private Integer annee;
+    @Column(name = "code_acces", length = 20, unique = true)
+    private String codeAcces;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "proprietaire_id")
@@ -67,6 +69,14 @@ public class Vehicule {
 
     public void setAnnee(Integer annee) {
         this.annee = annee;
+    }
+
+    public String getCodeAcces() {
+        return codeAcces;
+    }
+
+    public void setCodeAcces(String codeAcces) {
+        this.codeAcces = codeAcces;
     }
 
     public Utilisateur getProprietaire() {

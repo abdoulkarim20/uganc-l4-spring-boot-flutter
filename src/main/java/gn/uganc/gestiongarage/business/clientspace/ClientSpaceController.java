@@ -10,12 +10,17 @@ import gn.uganc.gestiongarage.business.utilisateur.Utilisateur;
 import gn.uganc.gestiongarage.business.utilisateur.UtilisateurRepository;
 import gn.uganc.gestiongarage.business.vehicule.Vehicule;
 import gn.uganc.gestiongarage.business.vehicule.VehiculeRepository;
+import gn.uganc.gestiongarage.business.vehicule.dtos.VehiculeDto;
+import gn.uganc.gestiongarage.exception.BusinessException;
 import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -61,6 +66,21 @@ public class ClientSpaceController {
         );
     }
 
+    @PostMapping("/vehicules")
+    public ClientVehicleDto createVehicle(@AuthenticationPrincipal UserDetails userDetails,
+                                          @RequestBody VehiculeDto vehiculeDto) {
+        Utilisateur client = utilisateurRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+        validateVehicle(vehiculeDto);
+        Vehicule vehicule = new Vehicule();
+        vehicule.setImmatriculation(vehiculeDto.getImmatriculation());
+        vehicule.setMarque(vehiculeDto.getMarque());
+        vehicule.setModele(vehiculeDto.getModele());
+        vehicule.setAnnee(vehiculeDto.getAnnee());
+        vehicule.setProprietaire(client);
+        return toVehicleDto(vehiculeRepository.save(vehicule));
+    }
+
     private ClientVehicleDto toVehicleDto(Vehicule vehicule) {
         return new ClientVehicleDto(vehicule.getId(), vehicule.getImmatriculation(), vehicule.getMarque(),
                 vehicule.getModele(), vehicule.getAnnee());
@@ -84,5 +104,17 @@ public class ClientSpaceController {
 
     private String valueOrEmpty(String value) {
         return value == null ? "" : value;
+    }
+
+    private void validateVehicle(VehiculeDto vehiculeDto) {
+        if (!StringUtils.hasText(vehiculeDto.getImmatriculation())) {
+            throw new BusinessException("L'immatriculation est obligatoire.");
+        }
+        if (!StringUtils.hasText(vehiculeDto.getMarque())) {
+            throw new BusinessException("La marque est obligatoire.");
+        }
+        if (!StringUtils.hasText(vehiculeDto.getModele())) {
+            throw new BusinessException("Le modele est obligatoire.");
+        }
     }
 }

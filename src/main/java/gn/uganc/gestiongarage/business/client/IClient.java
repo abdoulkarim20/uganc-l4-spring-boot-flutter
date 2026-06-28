@@ -12,6 +12,8 @@ public interface IClient {
 
     ClientDto getById(Long id);
 
+    ClientDto getByTelephone(String telephone);
+
     ClientDto update(Long id, ClientDto clientDto);
 
     void delete(Long id);

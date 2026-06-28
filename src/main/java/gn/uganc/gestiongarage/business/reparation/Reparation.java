@@ -19,6 +19,8 @@ public class Reparation {
     private LocalDate dateReparation;
     @Column(length = 1000)
     private String description;
+    @Column(length = 1000)
+    private String consigneClient;
     @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal cout;
     @Column(length = 30, nullable = false)
@@ -57,6 +59,14 @@ public class Reparation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getConsigneClient() {
+        return consigneClient;
+    }
+
+    public void setConsigneClient(String consigneClient) {
+        this.consigneClient = consigneClient;
     }
 
     public BigDecimal getCout() {

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Accès GARAGIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css?v=14">
+</head>
+<body class="client-access-page">
+<main class="client-access-wrapper">
+    <section class="client-access-panel client-access-panel-wide" aria-labelledby="clientAccessTitle">
+        <div class="client-access-intro">
+            <a class="client-access-logo" href="/">
+                <img src="/images/garagix-logo.png" alt="GARAGIX">
+            </a>
+            <span class="landing-pill"><i class="bi bi-shield-check" aria-hidden="true"></i> Accès sécurisé</span>
+            <h1 id="clientAccessTitle">Choisissez votre espace.</h1>
+            <p>
+                GARAGIX accompagne les propriétaires de véhicules et les garages qui souhaitent gérer leur activité.
+            </p>
+            <div class="client-access-points">
+                <span><i class="bi bi-person-check" aria-hidden="true"></i> Client physique ou moral</span>
+                <span><i class="bi bi-car-front" aria-hidden="true"></i> Suivi des véhicules</span>
+                <span><i class="bi bi-building" aria-hidden="true"></i> Espace garage professionnel</span>
+            </div>
+        </div>
+
+        <div class="client-access-options">
+            <p class="eyebrow">Accès plateforme</p>
+            <h2>Vous êtes client ou garage ?</h2>
+            <p>Connectez-vous, créez un compte client ou demandez l’accès pour votre structure.</p>
+            <p class="form-success access-feedback" data-access-feedback hidden></p>
+
+            <div class="client-access-grid client-access-grid-three">
+                <article class="client-access-card">
+                    <span><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i></span>
+                    <div>
+                        <h3>Déjà inscrit</h3>
+                        <p>Accédez à votre espace avec vos identifiants.</p>
+                    </div>
+                    <a class="primary-button button-link" href="/login">Me connecter</a>
+                </article>
+
+                <article class="client-access-card">
+                    <span><i class="bi bi-person-plus" aria-hidden="true"></i></span>
+                    <div>
+                        <h3>Client</h3>
+                        <p>Créez un compte pour suivre vos véhicules et réparations.</p>
+                    </div>
+                    <a class="ghost-button button-link" href="/client/register">Créer mon compte</a>
+                </article>
+
+                <article class="client-access-card">
+                    <span><i class="bi bi-shop" aria-hidden="true"></i></span>
+                    <div>
+                        <h3>Garage</h3>
+                        <p>Enregistrez votre structure pour gérer votre atelier.</p>
+                    </div>
+                    <a class="ghost-button button-link" href="/garage/access">Demander un accès</a>
+                </article>
+            </div>
+
+            <a class="client-access-back" href="/">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                Retour à l'accueil
+            </a>
+        </div>
+    </section>
+</main>
+<script src="/js/client-access.js?v=2"></script>
+</body>
+</html>

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard.css?v=2">
 </head>
 <body class="client-space-page">
 <main class="client-space-shell">
@@ -60,6 +60,34 @@
                     <h3>Mes véhicules</h3>
                 </div>
             </div>
+            <button class="ghost-button client-add-vehicle-toggle" type="button" id="showVehicleForm">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                Ajouter un véhicule
+            </button>
+            <form class="client-vehicle-form" id="clientVehicleForm" autocomplete="off" hidden>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="vehicleImmatriculation">Immatriculation</label>
+                        <input id="vehicleImmatriculation" name="immatriculation" type="text" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="vehicleMarque">Marque</label>
+                        <input id="vehicleMarque" name="marque" type="text" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="vehicleModele">Modèle</label>
+                        <input id="vehicleModele" name="modele" type="text" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="vehicleAnnee">Année</label>
+                        <input id="vehicleAnnee" name="annee" type="number">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="ghost-button" type="button" id="hideVehicleForm">Annuler</button>
+                    <button class="primary-button" type="submit">Enregistrer</button>
+                </div>
+            </form>
             <div class="client-card-list" id="clientVehicles"></div>
         </article>
 
@@ -90,7 +118,7 @@
     </section>
 </main>
 <div class="toast" id="toast" hidden></div>
-<script src="/js/auth.js?v=9"></script>
-<script src="/js/client-dashboard.js?v=1"></script>
+<script src="/js/auth.js?v=11"></script>
+<script src="/js/client-dashboard.js?v=3"></script>
 </body>
 </html>

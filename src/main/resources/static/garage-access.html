@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demande d'accès garage | GARAGIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css?v=5">
+</head>
+<body class="client-access-page">
+<main class="garage-request-wrapper">
+    <section class="garage-request-panel">
+        <aside class="garage-request-side">
+            <a class="client-access-logo" href="/">
+                <img src="/images/garagix-logo.png" alt="GARAGIX">
+            </a>
+            <span class="landing-pill"><i class="bi bi-building-check" aria-hidden="true"></i> Garage professionnel</span>
+            <h1>Demander un accès garage.</h1>
+            <p>Créez votre demande. Après validation, votre responsable recevra un accès dédié à la plateforme.</p>
+            <div class="client-access-points">
+                <span><i class="bi bi-building" aria-hidden="true"></i> Structure vérifiée</span>
+                <span><i class="bi bi-person-badge" aria-hidden="true"></i> Responsable identifié</span>
+                <span><i class="bi bi-shield-check" aria-hidden="true"></i> Accès après validation</span>
+            </div>
+        </aside>
+
+        <section class="garage-request-form-card" aria-labelledby="garageRequestTitle">
+            <p class="eyebrow">Inscription garage</p>
+            <h2 id="garageRequestTitle">Demande d'accès</h2>
+            <p>Renseignez les informations utiles pour vérifier votre structure.</p>
+
+            <div class="garage-stepper" aria-label="Progression du formulaire">
+                <button class="garage-step-indicator active" type="button" data-step-target="1">
+                    <span>1</span>
+                    Structure
+                </button>
+                <button class="garage-step-indicator" type="button" data-step-target="2">
+                    <span>2</span>
+                    Responsable
+                </button>
+            </div>
+
+            <form class="garage-request-form" id="garageRequestForm" autocomplete="off">
+                <div class="garage-step" data-step="1">
+                    <div class="garage-step-heading">
+                        <span><i class="bi bi-building" aria-hidden="true"></i></span>
+                        <div>
+                            <strong>Informations du garage</strong>
+                            <small>Identité, localisation et description de la structure.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="nom">Nom du garage</label>
+                            <input id="nom" name="nom" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="telephone">Téléphone du garage</label>
+                            <input id="telephone" name="telephone" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="email">Email</label>
+                            <input id="email" name="email" type="email">
+                        </div>
+                        <div class="form-field">
+                            <label for="ville">Ville</label>
+                            <input id="ville" name="ville" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="quartier">Quartier</label>
+                            <input id="quartier" name="quartier" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="pays">Pays</label>
+                            <input id="pays" name="pays" type="text" value="Guinée" required>
+                        </div>
+                        <div class="form-field full">
+                            <label for="adresse">Adresse ou repère</label>
+                            <input id="adresse" name="adresse" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="latitude">Latitude</label>
+                            <input id="latitude" name="latitude" type="number" step="0.000001">
+                        </div>
+                        <div class="form-field">
+                            <label for="longitude">Longitude</label>
+                            <input id="longitude" name="longitude" type="number" step="0.000001">
+                        </div>
+                        <div class="form-field full">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="4" placeholder="Présentez rapidement votre garage"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="garage-step" data-step="2" hidden>
+                    <div class="garage-step-heading">
+                        <span><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+                        <div>
+                            <strong>Informations du responsable</strong>
+                            <small>Ce contact servira à créer l'accès admin du garage après validation.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="nomResponsable">Nom du responsable</label>
+                            <input id="nomResponsable" name="nomResponsable" type="text" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="telephoneResponsable">Téléphone responsable</label>
+                            <input id="telephoneResponsable" name="telephoneResponsable" type="text" required>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="form-success" id="garageRequestSuccess" hidden>
+                    Demande enregistrée. Votre garage est en attente de validation.
+                </p>
+
+                <div class="garage-step-actions">
+                    <a class="ghost-button button-link" href="/client/access" data-garage-back-link>Retour</a>
+                    <button class="ghost-button" type="button" data-garage-prev hidden>Précédent</button>
+                    <button class="primary-button" type="button" data-garage-next>Suivant</button>
+                    <button class="primary-button login-button" type="submit" hidden>Envoyer la demande</button>
+                </div>
+            </form>
+        </section>
+    </section>
+</main>
+<script src="/js/garage-access.js?v=3"></script>
+</body>
+</html>

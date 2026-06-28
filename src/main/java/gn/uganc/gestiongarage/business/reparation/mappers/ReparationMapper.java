@@ -15,6 +15,7 @@ public class ReparationMapper {
         reparationDto.setId(reparation.getId());
         reparationDto.setDateReparation(reparation.getDateReparation());
         reparationDto.setDescription(reparation.getDescription());
+        reparationDto.setConsigneClient(reparation.getConsigneClient());
         reparationDto.setCout(reparation.getCout());
         reparationDto.setStatut(reparation.getStatut());
         reparationDto.setVehiculeId(reparation.getVehicule() != null ? reparation.getVehicule().getId() : null);
@@ -31,6 +32,7 @@ public class ReparationMapper {
         reparation.setId(reparationDto.getId());
         reparation.setDateReparation(reparationDto.getDateReparation());
         reparation.setDescription(reparationDto.getDescription());
+        reparation.setConsigneClient(reparationDto.getConsigneClient());
         reparation.setCout(reparationDto.getCout());
         reparation.setStatut(reparationDto.getStatut());
         reparation.setVehicule(vehicule);

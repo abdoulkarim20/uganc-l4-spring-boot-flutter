@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/client-space/**").hasAnyRole("CLIENT", "ADMIN")
                         .requestMatchers("/api/mecanicien-space/**").hasAnyRole("MECANICIEN", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/garages/**").hasAnyRole("ADMIN", "ADMIN_GARAGE")
@@ -54,8 +55,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/landing.html", "/login", "/login.html", "/403", "/403.html",
-                                "/change-password", "/change-password.html",
+                        .requestMatchers("/", "/landing.html", "/login", "/login.html", "/client/access", "/client-access.html",
+                                "/client/register", "/client-register.html", "/garage/access", "/garage-access.html", "/403", "/403.html",
+                                "/vehicle/health", "/vehicle-health.html", "/change-password", "/change-password.html",
                                 "/dashboard.html", "/crud.html", "/detail.html", "/client-dashboard.html",
                                 "/mecanicien-dashboard.html",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()

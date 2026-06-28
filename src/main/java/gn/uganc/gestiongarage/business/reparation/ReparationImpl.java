@@ -13,11 +13,15 @@ import gn.uganc.gestiongarage.exception.BusinessException;
 import gn.uganc.gestiongarage.exception.ResourceNotFoundException;
 import gn.uganc.gestiongarage.security.CurrentUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 @Service
 public class ReparationImpl implements IReparation {
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final String CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
     private final ReparationRepository reparationRepository;
     private final VehiculeRepository vehiculeRepository;
@@ -40,6 +44,7 @@ public class ReparationImpl implements IReparation {
     @Override
     public ReparationDto create(ReparationDto reparationDto) {
         Vehicule vehicule = findVehicule(reparationDto.getVehiculeId());
+        ensureVehicleHealthCode(vehicule);
         Utilisateur mecanicien = findMecanicienUser(reparationDto.getMecanicienId());
         Garage garage = resolveGarage(reparationDto, mecanicien);
         validateGarageCoherence(mecanicien, garage);
@@ -68,11 +73,13 @@ public class ReparationImpl implements IReparation {
     public ReparationDto update(Long id, ReparationDto reparationDto) {
         Reparation reparation = findReparation(id);
         Vehicule vehicule = findVehicule(reparationDto.getVehiculeId());
+        ensureVehicleHealthCode(vehicule);
         Utilisateur mecanicien = findMecanicienUser(reparationDto.getMecanicienId());
         Garage garage = resolveGarage(reparationDto, mecanicien);
         validateGarageCoherence(mecanicien, garage);
         reparation.setDateReparation(reparationDto.getDateReparation());
         reparation.setDescription(reparationDto.getDescription());
+        reparation.setConsigneClient(reparationDto.getConsigneClient());
         reparation.setCout(reparationDto.getCout());
         reparation.setStatut(reparationDto.getStatut());
         reparation.setVehicule(vehicule);
@@ -133,5 +140,25 @@ public class ReparationImpl implements IReparation {
         if (mecanicien.getGarage() == null || !mecanicien.getGarage().getId().equals(garage.getId())) {
             throw new BusinessException("Le mecanicien doit appartenir au meme garage que la reparation.");
         }
+    }
+
+    private void ensureVehicleHealthCode(Vehicule vehicule) {
+        if (StringUtils.hasText(vehicule.getCodeAcces())) {
+            return;
+        }
+        String code;
+        do {
+            code = generateAccessCode();
+        } while (vehiculeRepository.existsByCodeAcces(code));
+        vehicule.setCodeAcces(code);
+        vehiculeRepository.save(vehicule);
+    }
+
+    private String generateAccessCode() {
+        StringBuilder builder = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            builder.append(CODE_ALPHABET.charAt(RANDOM.nextInt(CODE_ALPHABET.length())));
+        }
+        return builder.toString();
     }
 }

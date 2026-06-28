@@ -7,6 +7,7 @@ public class VehiculeDto {
     private String marque;
     private String modele;
     private Integer annee;
+    private String codeAcces;
     private Long clientId;
 
     public Long getId() {
@@ -47,6 +48,14 @@ public class VehiculeDto {
 
     public void setAnnee(Integer annee) {
         this.annee = annee;
+    }
+
+    public String getCodeAcces() {
+        return codeAcces;
+    }
+
+    public void setCodeAcces(String codeAcces) {
+        this.codeAcces = codeAcces;
     }
 
     public Long getClientId() {

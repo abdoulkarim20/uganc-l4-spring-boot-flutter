@@ -36,5 +36,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     boolean existsByGarageId(Long garageId);
 
+    boolean existsByRoleAndGarageId(RoleUser role, Long garageId);
+
     boolean existsByRole(RoleUser role);
 }

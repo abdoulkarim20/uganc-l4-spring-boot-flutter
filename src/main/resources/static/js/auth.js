@@ -1,7 +1,15 @@
 const AUTH_TOKEN_KEY = "garagix.accessToken";
 const AUTH_USER_KEY = "garagix.user";
+const AUTH_LAST_ACTIVITY_KEY = "garagix.lastActivityAt";
+const AUTH_INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000;
+let inactivityTimer = null;
+let lastActivityWriteAt = 0;
 
 function getAuthToken() {
+    if (isSessionInactiveExpired()) {
+        clearAuthSession();
+        return null;
+    }
     return localStorage.getItem(AUTH_TOKEN_KEY);
 }
 
@@ -12,11 +20,14 @@ function setAuthSession(authResponse) {
         roles: authResponse.roles || [],
         mustChangePassword: Boolean(authResponse.mustChangePassword)
     }));
+    markSessionActivity(true);
 }
 
 function clearAuthSession() {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
+    localStorage.removeItem(AUTH_LAST_ACTIVITY_KEY);
+    clearTimeout(inactivityTimer);
 }
 
 function isAdminSession() {
@@ -78,7 +89,7 @@ function redirectAfterPasswordChange() {
 
 function requireClientSession() {
     if (!getAuthToken()) {
-        window.location.href = "/login";
+        window.location.href = loginUrlForCurrentRoute();
         return false;
     }
     if (!isClientSession() && !isAdminSession()) {
@@ -94,7 +105,7 @@ function requireClientSession() {
 
 function requireMecanicienSession() {
     if (!getAuthToken()) {
-        window.location.href = "/login";
+        window.location.href = loginUrlForCurrentRoute();
         return false;
     }
     if (!isMecanicienSession() && !isAdminSession()) {
@@ -118,7 +129,7 @@ function getAuthUser() {
 
 function requireAdminSession() {
     if (!getAuthToken()) {
-        window.location.href = "/login";
+        window.location.href = loginUrlForCurrentRoute();
         return false;
     }
     if (!isAdminSession()) {
@@ -147,7 +158,7 @@ async function authFetch(url, options = {}) {
 
     if (response.status === 401) {
         clearAuthSession();
-        window.location.href = "/login";
+        window.location.href = loginUrlForCurrentRoute();
         throw new Error("Session expirée");
     }
 
@@ -168,6 +179,7 @@ async function authFetch(url, options = {}) {
 function wireLogoutLinks() {
     renderAuthenticatedUser();
     renderRoleNavigation();
+    scheduleInactivityLogout();
     document.querySelectorAll("[data-logout]").forEach((link) => {
         link.addEventListener("click", (event) => {
             event.preventDefault();
@@ -175,6 +187,66 @@ function wireLogoutLinks() {
             window.location.href = "/";
         });
     });
+}
+
+function initializeInactivityWatcher() {
+    ["click", "keydown", "mousemove", "mousedown", "scroll", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, () => markSessionActivity(), {passive: true});
+    });
+    scheduleInactivityLogout();
+}
+
+function markSessionActivity(force = false) {
+    if (!localStorage.getItem(AUTH_TOKEN_KEY)) {
+        return;
+    }
+    const now = Date.now();
+    if (!force && now - lastActivityWriteAt < 15000) {
+        return;
+    }
+    lastActivityWriteAt = now;
+    localStorage.setItem(AUTH_LAST_ACTIVITY_KEY, String(now));
+    scheduleInactivityLogout();
+}
+
+function isSessionInactiveExpired() {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) {
+        return false;
+    }
+    const lastActivityAt = Number(localStorage.getItem(AUTH_LAST_ACTIVITY_KEY) || 0);
+    return lastActivityAt > 0 && Date.now() - lastActivityAt > AUTH_INACTIVITY_TIMEOUT_MS;
+}
+
+function scheduleInactivityLogout() {
+    clearTimeout(inactivityTimer);
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) {
+        return;
+    }
+    const lastActivityAt = Number(localStorage.getItem(AUTH_LAST_ACTIVITY_KEY) || Date.now());
+    const remaining = AUTH_INACTIVITY_TIMEOUT_MS - (Date.now() - lastActivityAt);
+    if (remaining <= 0) {
+        expireSessionByInactivity();
+        return;
+    }
+    inactivityTimer = setTimeout(expireSessionByInactivity, remaining);
+}
+
+function expireSessionByInactivity() {
+    if (!isSessionInactiveExpired()) {
+        scheduleInactivityLogout();
+        return;
+    }
+    clearAuthSession();
+    if (!["/", "/login"].includes(window.location.pathname)) {
+        window.location.href = loginUrlForCurrentRoute();
+    }
+}
+
+function loginUrlForCurrentRoute() {
+    const target = `${window.location.pathname}${window.location.search}`;
+    return `/login?redirect=${encodeURIComponent(target)}`;
 }
 
 function renderRoleNavigation() {
@@ -224,3 +296,5 @@ function formatUserRole(role = "") {
     };
     return labels[normalized] || normalized || "Profil";
 }
+
+initializeInactivityWatcher();
